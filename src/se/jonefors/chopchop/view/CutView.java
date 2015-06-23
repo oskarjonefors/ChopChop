@@ -19,7 +19,7 @@ public class CutView extends JPanel {
     private final static Color BASE_SEGMENT_COLOR = Color.BLUE;
     private final static Color CUT_COLOR = Color.LIGHT_GRAY;
     private final static Color MEASUREMENT_FONT_COLOR = Color.BLACK;
-    private final static int MEASUREMENT_FONT_SIZE = 11;
+    private final static int MEASUREMENT_FONT_SIZE = 12;
     private final static int SUMMARY_HEADER_FONT_SIZE = 18;
 
     private final static int SECTION_HEIGHT = 30;
@@ -107,15 +107,19 @@ public class CutView extends JPanel {
                             segW, secHeight - 4);
                     g.setColor(MEASUREMENT_FONT_COLOR);
                     final String measurementString = Integer.toString(c.getLength());
-                    if (g.getFontMetrics().stringWidth(measurementString) + 4 > scale * c.getLength()) {
+                    final int measurementStringWidth = g.getFontMetrics().stringWidth(measurementString);
+                    int centerXpos = currX + (segW / 2);
+                    if (measurementStringWidth + 4 > scale * c.getLength()) {
+                        centerXpos -=  (g.getFontMetrics().stringWidth("0") / 2);
                         int height = g.getFontMetrics().getHeight() - 2;
-                        int verticalY = currY + SECTION_HEIGHT - height;
+                        int verticalY = currY + SECTION_HEIGHT + 2 - height;
                         for (char ch : measurementString.toCharArray()) {
-                            g.drawString(String.valueOf(ch), currX + 2, verticalY);
+                            g.drawString(String.valueOf(ch), centerXpos, verticalY);
                             verticalY += height;
                         }
                     } else {
-                        g.drawString(measurementString, currX + 2, currY + SECTION_HEIGHT - 4);
+                        centerXpos -=  measurementStringWidth / 2;
+                        g.drawString(measurementString, centerXpos, currY + SECTION_HEIGHT - 4);
                     }
                     currX += segW + 2;
                 }

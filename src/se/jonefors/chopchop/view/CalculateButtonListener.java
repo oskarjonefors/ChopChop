@@ -41,12 +41,8 @@ public class CalculateButtonListener implements ActionListener {
 
         if (planner.isReady()) {
             List<Segment> sol = planner.getOptimalSolution();
-            for (Segment s : sol) {
-                System.out.println(s);
-            }
             cv.showSegments(sol, nameField.getText());
             cv.repaint();
-
         }
     }
 
