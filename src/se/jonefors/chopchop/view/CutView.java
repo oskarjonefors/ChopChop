@@ -73,26 +73,39 @@ public class CutView extends JPanel {
             int freeSpace = s.getFreeSpace();
             String fs = freeSpace > 0 ? ", spill " + s.getFreeSpace() : "";
 
+            g.setFont(measurementFont);
+            int maxHeight = 0;
+            for (Cut c : s.getCuts()) {
+                final String measurementString = Integer.toString(c.getLength());
+                final FontMetrics m = g.getFontMetrics();
+                if (m.stringWidth(measurementString) + 4 > scale * c.getLength()) {
+                    final int height = m.getHeight() * measurementString.length();
+                    maxHeight = Math.max(maxHeight, height);
+                }
+            }
+
+            int secHeight = Math.max(SECTION_HEIGHT, maxHeight);
+
             g.setFont(quantityFont);
             g.setColor(FONT_COLOR);
             g.drawString(s.getQuantity() + " x " + s.getLength() + fs + ":", MARGIN, currY);
             g.setColor(BASE_SEGMENT_COLOR);
-            g.fillRect(MARGIN, currY + MARGIN, (int)(scale * s.getLength()), SECTION_HEIGHT);
+            g.fillRect(MARGIN, currY + MARGIN, (int)(scale * s.getLength()), secHeight);
 
 
             int currX = MARGIN + 1;
+
+            g.setFont(measurementFont);
             for (Cut c : s.getCuts()) {
                 for (int i = 0; i < c.getQuantity(); i++) {
                     int segW = (int)(scale * c.getLength() - 2);
                     g.setColor(CUT_COLOR);
                     g.fillRect(currX, currY + MARGIN + 2,
-                            segW, SECTION_HEIGHT - 4);
-
-                    g.setFont(measurementFont);
+                            segW, secHeight - 4);
                     g.setColor(MEASUREMENT_FONT_COLOR);
                     final String measurementString = Integer.toString(c.getLength());
-                    if (g.getFontMetrics().stringWidth(measurementString) > scale * c.getLength()) {
-                        int height = g.getFontMetrics().getHeight();
+                    if (g.getFontMetrics().stringWidth(measurementString) + 4 > scale * c.getLength()) {
+                        int height = g.getFontMetrics().getHeight() - 2;
                         int verticalY = currY + SECTION_HEIGHT - height;
                         for (char ch : measurementString.toCharArray()) {
                             g.drawString(String.valueOf(ch), currX + 2, verticalY);
@@ -107,7 +120,7 @@ public class CutView extends JPanel {
 
             }
 
-            currY += SECTION_HEIGHT;
+            currY += secHeight;
         }
     }
 
