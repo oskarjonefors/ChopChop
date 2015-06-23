@@ -35,9 +35,6 @@ public class MainWindow extends JFrame {
         this.getContentPane().getComponent(1).setPreferredSize(new Dimension(500, 400));
         this.getContentPane().getComponent(2).setPreferredSize(new Dimension(150, 400));
 
-        //this.setResizable(false);
-
-
         this.setTitle("ChopChop");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
