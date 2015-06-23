@@ -5,7 +5,9 @@ import se.jonefors.chopchop.Segment;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Oskar Jönefors
@@ -18,31 +20,54 @@ public class CutView extends JPanel {
     private final static Color CUT_COLOR = Color.LIGHT_GRAY;
     private final static Color MEASUREMENT_FONT_COLOR = Color.BLACK;
     private final static int MEASUREMENT_FONT_SIZE = 11;
+    private final static int SUMMARY_HEADER_FONT_SIZE = 18;
 
     private final static int SECTION_HEIGHT = 30;
     private final static int MARGIN = 5;
 
-    private final Font headerFont;
-    private final Font quantityFont;
-    private final Font measurementFont;
+    private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
+    private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);
+    private final Font measurementFont = new Font("Measurement", Font.BOLD, MEASUREMENT_FONT_SIZE);
+    private final Font summaryHeaderFont = new Font("Summary", Font.BOLD, SUMMARY_HEADER_FONT_SIZE);
     private List<Segment> segments;
 
 
 
     public CutView() {
-
         this.setBackground(Color.WHITE);
-        headerFont = new Font("Dialog", Font.BOLD, 20);
-        quantityFont = new Font("Quantity", Font.BOLD, 15);
-        measurementFont = new Font("Measurement", Font.BOLD, MEASUREMENT_FONT_SIZE);
-
     }
 
     private void drawSegments(Graphics g) {
-        int currY = SECTION_HEIGHT;
+        g.setFont(headerFont);
+        g.drawString("Kapspecifikation", 0, 30);
+
+        int currY = SECTION_HEIGHT * 3;
         final double maximumSegmentWidth = this.getWidth() - MARGIN * 2;
         final double scale = maximumSegmentWidth / segments.get(0).getLength();
-        
+
+        /* Header */
+        Map<Integer,Integer> segmentSummary = new HashMap<>();
+        for (Segment s : segments) {
+            final int segLen = s.getLength();
+            final int segQty = s.getQuantity();
+
+            if (segmentSummary.containsKey(segLen)) {
+                segmentSummary.replace(segLen, segmentSummary.get(segLen) + segQty);
+            } else {
+                segmentSummary.put(segLen, segQty);
+            }
+        }
+
+        g.setFont(summaryHeaderFont);
+        g.drawString("Materialåtgång", MARGIN, currY);
+        int summaryX = MARGIN + SECTION_HEIGHT + g.getFontMetrics().stringWidth("Materialåtgång");
+
+        g.setFont(quantityFont);
+        for (Integer len : segmentSummary.keySet()) {
+            g.drawString(segmentSummary.get(len) + " x " + len, summaryX, currY);
+            currY += g.getFontMetrics().getHeight();
+        }
+
         for (Segment s : segments) {
             currY += SECTION_HEIGHT;
             int freeSpace = s.getFreeSpace();
@@ -89,8 +114,6 @@ public class CutView extends JPanel {
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        graphics.setFont(headerFont);
-        graphics.drawString("ChopChop", 0, 30);
 
         if (segments != null) {
             drawSegments(graphics);
