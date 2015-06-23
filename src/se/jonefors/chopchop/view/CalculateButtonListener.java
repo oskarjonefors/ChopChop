@@ -3,6 +3,7 @@ package se.jonefors.chopchop.view;
 import se.jonefors.chopchop.CutPlanner;
 import se.jonefors.chopchop.Segment;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -20,13 +21,15 @@ public class CalculateButtonListener implements ActionListener {
     private final List<LengthSpecification> lengths;
     private final CutPlanner planner;
     private final CutView cv;
+    private final JTextField nameField;
 
     public CalculateButtonListener(List<CutSpecification> cuts, List<LengthSpecification> lengths,
-                                   CutPlanner planner, CutView cv) {
+                                   CutPlanner planner, CutView cv, JTextField nameField) {
         this.cuts = cuts;
         this.lengths = lengths;
         this.planner = planner;
         this.cv = cv;
+        this.nameField = nameField;
     }
 
 
@@ -41,7 +44,7 @@ public class CalculateButtonListener implements ActionListener {
             for (Segment s : sol) {
                 System.out.println(s);
             }
-            cv.showSegments(sol);
+            cv.showSegments(sol, nameField.getText());
             cv.repaint();
 
         }

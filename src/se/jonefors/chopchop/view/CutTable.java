@@ -18,7 +18,7 @@ public class CutTable extends JPanel {
     private static final int LENGTH_COLUMN = 1;
     private static final int LENGTH_COLUMN_WIDTH = 100;
 
-    public CutTable(List<CutSpecification> cuts) {
+    public CutTable(List<CutSpecification> cuts, JTextField nameField) {
 
         for (int i = 0; i < DEFAULT_INITIAL_BLANK_ROWS; i++) {
             cuts.add(new CutSpecification());
@@ -33,6 +33,7 @@ public class CutTable extends JPanel {
         final JLabel lengthLabel = new JLabel("Önskade längder");
         this.add(lengthLabel, BorderLayout.NORTH);
         this.add(new JScrollPane(table), BorderLayout.CENTER);
+        this.add(nameField, BorderLayout.SOUTH);
 
         InputMap inputMap = table.getInputMap(WHEN_FOCUSED);
         ActionMap actionMap = table.getActionMap();

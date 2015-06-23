@@ -31,15 +31,18 @@ public class CutView extends JPanel {
     private final Font summaryHeaderFont = new Font("Summary", Font.BOLD, SUMMARY_HEADER_FONT_SIZE);
     private List<Segment> segments;
 
+    private String name;
+
 
 
     public CutView() {
         this.setBackground(Color.WHITE);
+        name = "";
     }
 
-    private void drawSegments(Graphics g) {
+    private void drawSegments(Graphics g, String label) {
         g.setFont(headerFont);
-        g.drawString("Kapspecifikation", 0, 30);
+        g.drawString("Kapspecifikation: " + label, 0, 30);
 
         int currY = SECTION_HEIGHT * 3;
         final double maximumSegmentWidth = this.getWidth() - MARGIN * 2;
@@ -129,12 +132,13 @@ public class CutView extends JPanel {
         super.paintComponent(graphics);
 
         if (segments != null) {
-            drawSegments(graphics);
+            drawSegments(graphics, name);
         }
     }
 
-    public void showSegments(List<Segment> segments) {
+    public void showSegments(List<Segment> segments, String name) {
         this.segments = segments;
+        this.name = name;
     }
 
 }

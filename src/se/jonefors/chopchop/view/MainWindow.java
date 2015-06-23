@@ -12,10 +12,13 @@ import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
 
+    private static final String NAME_DEFAULT = "Märke";
+
     public MainWindow() {
 
+        final JTextField nameField = new JTextField(NAME_DEFAULT);
         java.util.List<CutSpecification> cutSpecificationList = new ArrayList<>();
-        CutTable ct = new CutTable(cutSpecificationList);
+        CutTable ct = new CutTable(cutSpecificationList, nameField);
 
         java.util.List<LengthSpecification> lengthSpecificationList = new ArrayList<>();
         LengthTable lt = new LengthTable(lengthSpecificationList);
@@ -28,7 +31,8 @@ public class MainWindow extends JFrame {
         this.add(lt, BorderLayout.LINE_END);
 
         final JButton calcButton = new JButton("Beräkna kapschema");
-        calcButton.addActionListener(new CalculateButtonListener(cutSpecificationList, lengthSpecificationList, new CutPlanner(), cv));
+        calcButton.addActionListener(new CalculateButtonListener(cutSpecificationList,
+                lengthSpecificationList, new CutPlanner(), cv, nameField));
         this.add(calcButton, BorderLayout.SOUTH);
 
         this.getContentPane().getComponent(0).setPreferredSize(new Dimension(150, 400));
