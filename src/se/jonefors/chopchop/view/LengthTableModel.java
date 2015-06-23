@@ -69,13 +69,21 @@ public class LengthTableModel extends AbstractTableModel {
 
         final LengthSpecification editRow = data.get(rowIndex);
         boolean valueSet = false;
-        if (columnIndex == ACTIVE_COLUMN) {
+
+        if (aValue == null) {
+            data.remove(rowIndex);
+            if (data.size() == 0) {
+                data.add(new LengthSpecification(0));
+            }
+        }
+
+        if (aValue != null && columnIndex == ACTIVE_COLUMN) {
             final boolean active = (Boolean) aValue;
             editRow.active = active;
             valueSet = true;
             log.log(Level.FINER, "Changed value at row " + rowIndex + " column " + columnIndex +
                     " to " + active);
-        } else  if (columnIndex == LENGTH_COLUMN) {
+        } else  if (aValue != null && columnIndex == LENGTH_COLUMN) {
 
             int length = (Integer) aValue;
 

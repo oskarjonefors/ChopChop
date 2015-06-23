@@ -42,8 +42,7 @@ public class CutView extends JPanel {
         int currY = SECTION_HEIGHT;
         final double maximumSegmentWidth = this.getWidth() - MARGIN * 2;
         final double scale = maximumSegmentWidth / segments.get(0).getLength();
-
-        System.out.println(scale);
+        
         for (Segment s : segments) {
             currY += SECTION_HEIGHT;
             int freeSpace = s.getFreeSpace();

@@ -2,6 +2,8 @@ package se.jonefors.chopchop.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
@@ -31,6 +33,24 @@ public class LengthTable extends JPanel {
         final JLabel lengthLabel = new JLabel("Tillgängliga längder");
         this.add(lengthLabel, BorderLayout.NORTH);
         this.add(new JScrollPane(table), BorderLayout.CENTER);
+
+        InputMap inputMap = table.getInputMap(WHEN_FOCUSED);
+        ActionMap actionMap = table.getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
+        actionMap.put("delete", new AbstractAction() {
+            public void actionPerformed(ActionEvent evt) {
+                int row = table.getSelectedRow();
+                int col = table.getSelectedColumn();
+
+                if (row >= 0 && col >= 0) {
+                    row = table.convertRowIndexToModel(row);
+                    col = table.convertColumnIndexToModel(col);
+                    table.getModel().setValueAt(null, row, col);
+                }
+                table.repaint();
+            }
+        });
     }
 
     private void loadLengths() {

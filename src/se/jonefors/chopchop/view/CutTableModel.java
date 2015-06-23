@@ -80,7 +80,7 @@ public class CutTableModel extends AbstractTableModel {
 
         if (editRow.quantity == 0 && editRow.length == 0 && data.size() > 1) {
             data.remove(editRow);
-        } else if (rowIndex == data.size() - 1) {
+        } else if (rowIndex == data.size() - 1 && value != 0) {
             data.add(new CutSpecification());
             log.log(Level.FINER, "Spawned new row at index " + (rowIndex + 1));
         }
