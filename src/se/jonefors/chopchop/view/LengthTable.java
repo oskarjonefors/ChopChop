@@ -54,8 +54,6 @@ public class LengthTable extends JPanel {
     }
 
     private void loadLengths() {
-        availableLengths.add(new LengthSpecification(6000));
-        availableLengths.add(new LengthSpecification(12000));
 
         for (int i = 0; i < DEFAULT_INITIAL_BLANK_ROWS; i++) {
             availableLengths.add(new LengthSpecification(0));

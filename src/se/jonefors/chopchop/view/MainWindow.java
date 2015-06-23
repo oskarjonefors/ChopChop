@@ -4,6 +4,8 @@ import se.jonefors.chopchop.CutPlanner;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +22,7 @@ public class MainWindow extends JFrame {
         java.util.List<CutSpecification> cutSpecificationList = new ArrayList<>();
         CutTable ct = new CutTable(cutSpecificationList, nameField);
 
-        java.util.List<LengthSpecification> lengthSpecificationList = new ArrayList<>();
+        java.util.List<LengthSpecification> lengthSpecificationList = ConfigurationManager.getSavedLengths();
         LengthTable lt = new LengthTable(lengthSpecificationList);
 
         CutView cv = new CutView();
@@ -43,6 +45,43 @@ public class MainWindow extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+
+        this.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                ConfigurationManager.writeConfig(lengthSpecificationList);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent windowEvent) {
+
+            }
+        });
     }
 
     public static void main(String[] args)
