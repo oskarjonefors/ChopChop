@@ -25,7 +25,7 @@ public class LengthTable extends JPanel {
         loadLengths();
 
         LengthTableModel model = new LengthTableModel(availableLengths);
-        JTable table = new JTable(model);
+        final JTable table = new JTable(model);
         table.getColumnModel().getColumn(ACTIVE_COLUMN).setMaxWidth(ACTIVE_COLUMN_WIDTH);
         table.getColumnModel().getColumn(LENGTH_COLUMN).setMaxWidth(LENGTH_COLUMN_WIDTH);
         this.setLayout(new BorderLayout());

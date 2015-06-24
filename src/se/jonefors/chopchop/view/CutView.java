@@ -38,6 +38,7 @@ public class CutView extends JPanel {
     public CutView() {
         this.setBackground(Color.WHITE);
         name = "";
+        this.setLayout(new GridLayout());
     }
 
     private void drawSegments(Graphics g, String label) {

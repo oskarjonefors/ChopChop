@@ -22,14 +22,17 @@ public class MainWindow extends JFrame {
         java.util.List<CutSpecification> cutSpecificationList = new ArrayList<>();
         CutTable ct = new CutTable(cutSpecificationList, nameField);
 
-        java.util.List<LengthSpecification> lengthSpecificationList = ConfigurationManager.getSavedLengths();
+        final java.util.List<LengthSpecification> lengthSpecificationList = ConfigurationManager.getSavedLengths();
         LengthTable lt = new LengthTable(lengthSpecificationList);
 
         CutView cv = new CutView();
+        JScrollPane cvs = new JScrollPane();
+        cvs.setViewportView(cv);
+        cvs.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         this.setLayout(new BorderLayout(0,0));
         this.add(ct, BorderLayout.LINE_START);
-        this.add(cv, BorderLayout.CENTER);
+        this.add(cvs, BorderLayout.CENTER);
         this.add(lt, BorderLayout.LINE_END);
 
         final JButton calcButton = new JButton("Beräkna kapschema");
@@ -86,7 +89,11 @@ public class MainWindow extends JFrame {
 
     public static void main(String[] args)
     {
-        SwingUtilities.invokeLater(MainWindow::new);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainWindow();
+            }
+        });
     }
 
 }

@@ -152,13 +152,14 @@ public class CutPlanner {
         List<Segment> segs = new ArrayList<>();
 
         while (!allCutsAllocated) {
-            int minimumWaste = -1;
+            int minimumWaste = Integer.MAX_VALUE - 1;
             int optimalLength = -1;
             int[] maxUse = new int[cuts.length];
             for (Integer length : availableLengths) {
                 int[] currUse = getMaximumUse(cuts, nbrOfCuts, length);
-                int waste = length - getTotalLength(cuts, currUse);
 
+                int tl = getTotalLength(cuts, currUse);
+                int waste = tl == 0 ? minimumWaste + 1 : length - getTotalLength(cuts, currUse);
 
                 boolean priority;
                 if (prioritizeLongerSegments) {
@@ -167,7 +168,7 @@ public class CutPlanner {
                     priority = waste == minimumWaste && length < optimalLength;
                 }
 
-                if (waste < minimumWaste || priority || minimumWaste < 0) {
+                if (waste < minimumWaste || priority) {
                     minimumWaste = waste;
                     optimalLength = length;
                     maxUse = currUse;
