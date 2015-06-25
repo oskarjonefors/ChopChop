@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
 
+    private static final String APP_NAME = "Kapet";
     private static final String NAME_DEFAULT = "Märke";
 
     public MainWindow() {
@@ -29,7 +30,6 @@ public class MainWindow extends JFrame {
         CutView cv = new CutView();
         JScrollPane cvs = new JScrollPane();
         cvs.setViewportView(cv);
-        cvs.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         this.setLayout(new BorderLayout(0,0));
         this.add(ct, BorderLayout.LINE_START);
@@ -42,7 +42,6 @@ public class MainWindow extends JFrame {
         final JButton calcButton = new JButton("Beräkna kapschema");
         calcButton.addActionListener(new CalculateButtonListener(cutSpecificationList,
                 lengthSpecificationList, cp, cv, nameField));
-        //this.add(calcButton, BorderLayout.SOUTH);
 
         final JButton printButton = new JButton("Skriv ut");
         this.add(printButton, BorderLayout.SOUTH);
@@ -56,7 +55,7 @@ public class MainWindow extends JFrame {
         this.getContentPane().getComponent(1).setPreferredSize(new Dimension(500, 400));
         this.getContentPane().getComponent(2).setPreferredSize(new Dimension(150, 400));
 
-        this.setTitle("ChopChop");
+        this.setTitle(APP_NAME);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);

@@ -23,7 +23,7 @@ public class CutView extends JPanel {
     private final static int SUMMARY_HEADER_FONT_SIZE = 18;
 
     private final static int SECTION_HEIGHT = 30;
-    private final static int MARGIN = 5;
+    private final static int MARGIN = 10;
     private final static int ROW_SPACING = 20;
 
     private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
@@ -33,22 +33,25 @@ public class CutView extends JPanel {
     private List<Segment> segments;
 
     private String name;
-
+    private int totHeight;
 
 
     public CutView() {
         this.setBackground(Color.WHITE);
         name = "";
         this.setLayout(new GridLayout());
+        totHeight = 0;
+        this.setLayout(new FlowLayout());
     }
 
     private void drawSegments(Graphics g, String label) {
+
         g.setColor(FONT_COLOR);
         g.setFont(headerFont);
         g.drawString("Kapspecifikation: " + label, 0, 30);
 
         int currY = SECTION_HEIGHT * 3;
-        final double maximumSegmentWidth = this.getWidth() - MARGIN * 2;
+        final double maximumSegmentWidth = this.getWidth() - MARGIN * 4;
         final double scale = maximumSegmentWidth / segments.get(0).getLength();
 
         /* Header */
@@ -134,6 +137,9 @@ public class CutView extends JPanel {
 
             currY += secHeight + ROW_SPACING;
         }
+        totHeight = currY;
+        this.setPreferredSize(new Dimension(this.getWidth(), totHeight));
+        this.revalidate();
     }
 
     @Override
