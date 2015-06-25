@@ -24,6 +24,7 @@ public class CutView extends JPanel {
 
     private final static int SECTION_HEIGHT = 30;
     private final static int MARGIN = 5;
+    private final static int ROW_SPACING = 20;
 
     private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
     private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);
@@ -42,6 +43,7 @@ public class CutView extends JPanel {
     }
 
     private void drawSegments(Graphics g, String label) {
+        g.setColor(FONT_COLOR);
         g.setFont(headerFont);
         g.drawString("Kapspecifikation: " + label, 0, 30);
 
@@ -56,7 +58,9 @@ public class CutView extends JPanel {
             final int segQty = s.getQuantity();
 
             if (segmentSummary.containsKey(segLen)) {
-                segmentSummary.replace(segLen, segmentSummary.get(segLen) + segQty);
+                final int prevQty = segmentSummary.get(segLen);
+                segmentSummary.remove(segLen);
+                segmentSummary.put(segLen, prevQty + segQty);
             } else {
                 segmentSummary.put(segLen, segQty);
             }
@@ -128,7 +132,7 @@ public class CutView extends JPanel {
 
             }
 
-            currY += secHeight;
+            currY += secHeight + ROW_SPACING;
         }
     }
 
@@ -145,5 +149,4 @@ public class CutView extends JPanel {
         this.segments = segments;
         this.name = name;
     }
-
 }

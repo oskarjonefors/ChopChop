@@ -25,6 +25,7 @@ public class MainWindow extends JFrame {
         final java.util.List<LengthSpecification> lengthSpecificationList = ConfigurationManager.getSavedLengths();
         LengthTable lt = new LengthTable(lengthSpecificationList);
 
+        CutPlanner cp = new CutPlanner();
         CutView cv = new CutView();
         JScrollPane cvs = new JScrollPane();
         cvs.setViewportView(cv);
@@ -35,10 +36,21 @@ public class MainWindow extends JFrame {
         this.add(cvs, BorderLayout.CENTER);
         this.add(lt, BorderLayout.LINE_END);
 
+        final JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+
+
         final JButton calcButton = new JButton("Beräkna kapschema");
         calcButton.addActionListener(new CalculateButtonListener(cutSpecificationList,
-                lengthSpecificationList, new CutPlanner(), cv, nameField));
-        this.add(calcButton, BorderLayout.SOUTH);
+                lengthSpecificationList, cp, cv, nameField));
+        //this.add(calcButton, BorderLayout.SOUTH);
+
+        final JButton printButton = new JButton("Skriv ut");
+        this.add(printButton, BorderLayout.SOUTH);
+        printButton.addActionListener(new PrintButtonListener(cp, nameField));
+
+        buttonPanel.add(calcButton);
+        buttonPanel.add(printButton);
+        this.add(buttonPanel, BorderLayout.SOUTH);
 
         this.getContentPane().getComponent(0).setPreferredSize(new Dimension(150, 400));
         this.getContentPane().getComponent(1).setPreferredSize(new Dimension(500, 400));

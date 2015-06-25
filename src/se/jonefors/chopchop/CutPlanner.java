@@ -14,6 +14,7 @@ public class CutPlanner {
 
     private final List<Integer> availableLengths;
     private final List<Cut> requestedCuts;
+    private List<Segment> lastSolution;
 
     public CutPlanner() {
         availableLengths = new ArrayList<>();
@@ -209,19 +210,8 @@ public class CutPlanner {
             }
         }
 
-        segs.sort(new Comparator<Segment>() {
-            @Override
-            public int compare(Segment segment, Segment t1) {
-                /* Longest first */
-                return Integer.compare(t1.getLength(), segment.getLength());
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                return false;
-            }
-        });
-
+        Collections.sort(segs, new SegmentComparator());
+        lastSolution = segs;
         return segs;
     }
 
@@ -229,4 +219,7 @@ public class CutPlanner {
         return !availableLengths.isEmpty() && !requestedCuts.isEmpty();
     }
 
+    public List<Segment> getLastSolution() {
+        return lastSolution;
+    }
 }
