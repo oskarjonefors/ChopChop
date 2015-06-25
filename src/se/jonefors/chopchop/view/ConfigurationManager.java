@@ -76,8 +76,6 @@ public class ConfigurationManager {
 
     public static List<LengthSpecification> getSavedLengths() {
         File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
-
-        System.out.println(configFile.getAbsolutePath());
         if (configFile.exists()) {
             return readFromConfigFile(configFile);
         } else {
