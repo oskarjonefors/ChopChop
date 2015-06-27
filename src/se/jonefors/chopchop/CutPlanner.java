@@ -117,10 +117,6 @@ public class CutPlanner {
     }
 
     public List<Segment> getOptimalSolution() {
-        return getOptimalSolution(false);
-    }
-
-    public List<Segment> getOptimalSolution(boolean prioritizeLongerSegments) {
         if (availableLengths.isEmpty()) {
             throw new IllegalArgumentException("getOptimalSolution: No optimal solution can be " +
             "found since no base lengths have been added!");
@@ -158,18 +154,13 @@ public class CutPlanner {
             int[] maxUse = new int[cuts.length];
             for (Integer length : availableLengths) {
                 int[] currUse = getMaximumUse(cuts, nbrOfCuts, length);
-
                 int tl = getTotalLength(cuts, currUse);
-                int waste = tl == 0 ? minimumWaste + 1 : length - getTotalLength(cuts, currUse);
+                int usage = getTotalLength(cuts, currUse);
+                int waste = tl == 0 ? minimumWaste + 1 : length - usage;
 
-                boolean priority;
-                if (prioritizeLongerSegments) {
-                    priority = waste == minimumWaste && length > optimalLength;
-                } else {
-                    priority = waste == minimumWaste && length < optimalLength;
-                }
+                System.out.println("Waste is " + waste + " for length " + length + " and usage is " + usage);
 
-                if (waste < minimumWaste || priority) {
+                if (waste < minimumWaste || (waste == minimumWaste && length > optimalLength)) {
                     minimumWaste = waste;
                     optimalLength = length;
                     maxUse = currUse;
