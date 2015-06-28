@@ -130,6 +130,7 @@ public class CutPlanner {
         for (int length : lengths) {
             int[] maxUse = getMaximumUse(cutMeasurements, nbrOfCuts, length);
             int usedLength = getTotalLength(cutMeasurements, maxUse);
+
             int waste = length - usedLength;
             if (waste < minimumWaste || (
                     waste == minimumWaste && length > minimumWasteDef.length)) {
@@ -315,9 +316,6 @@ public class CutPlanner {
                                 newLink.waste = segment.getFreeSpace();
                                 newLink.searched = true;
                                 newLink.nbrOfLengths = 1;
-                            } else {
-                                currLink = newLink;
-                                break;
                             }
                         }
                     }
