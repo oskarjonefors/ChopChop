@@ -30,8 +30,8 @@ public class CutPlanner {
             final int measurement = cuts[cut];
             final int maxqty = baseLength / measurement;
             maxNbrOfCuts[cut] = maxqty < nbrOfCuts[cut] ? maxqty : nbrOfCuts[cut];
-            log.log(Level.FINER, "Can fit length of " + measurement + " a maximum of " + maxqty +
-                    " times in the base length of " + baseLength);
+/*            log.log(Level.FINER, "Can fit length of " + measurement + " a maximum of " + maxqty +
+                    " times in the base length of " + baseLength);*/
         }
 
         int[] optimalSolution = new int[maxNbrOfCuts.length];
@@ -87,6 +87,26 @@ public class CutPlanner {
         return length;
     }
 
+    private List<Segment> compoundSegments(List<Segment> segList) {
+        System.out.println("Received seglist of size " + segList.size());
+        final List<Segment> compoundedSegList = new ArrayList<>();
+
+        for (Segment seg : segList) {
+            boolean existingSegment = false;
+            for (Segment com : compoundedSegList) {
+                if (seg.equals(com)) {
+                    com.setQuantity(com.getQuantity() + 1);
+                    existingSegment = true;
+                }
+            }
+            if (!existingSegment) {
+                compoundedSegList.add(seg);
+            }
+        }
+
+        return compoundedSegList;
+    }
+
     public boolean addLength(int length) {
         log.log(Level.FINE, "Added base segment of length " + length);
         if (length <= 0) {
@@ -119,7 +139,7 @@ public class CutPlanner {
     public List<Segment> getOptimalSolution() {
         if (availableLengths.isEmpty()) {
             throw new IllegalArgumentException("getOptimalSolution: No optimal solution can be " +
-            "found since no base lengths have been added!");
+                    "found since no base lengths have been added!");
         }
         if (requestedCuts.isEmpty()) {
             throw new IllegalArgumentException("getOptimalSolution: No optimal solution can be " +
@@ -132,78 +152,28 @@ public class CutPlanner {
         for (Cut c : requestedCuts) {
             if (c.getLength() > maxLength) {
                 throw new IllegalArgumentException("getOptimalSolution: Requested cut of length " +
-                c.getLength() + " but the maximum available length is " + maxLength);
+                        c.getLength() + " but the maximum available length is " + maxLength);
             }
         }
 
-        boolean allCutsAllocated = false;
+        Collections.sort(availableLengths);
 
-        int[] cuts = new int[requestedCuts.size()];
-        int[] nbrOfCuts = new int[requestedCuts.size()];
-
-        for (int i = 0; i < requestedCuts.size(); i++) {
-            cuts[i] = requestedCuts.get(i).getLength();
-            nbrOfCuts[i] = requestedCuts.get(i).getQuantity();
+        int[] lengths = new int[availableLengths.size()];
+        for (int i = 0; i < lengths.length; i++) {
+            lengths[i] = availableLengths.get(i);
         }
 
-        List<Segment> segs = new ArrayList<>();
+        int[] cutMeasurements = new int[requestedCuts.size()];
+        int[] nbrOfCuts = new int [requestedCuts.size()];
 
-        while (!allCutsAllocated) {
-            int minimumWaste = Integer.MAX_VALUE - 1;
-            int optimalLength = -1;
-            int[] maxUse = new int[cuts.length];
-            for (Integer length : availableLengths) {
-                int[] currUse = getMaximumUse(cuts, nbrOfCuts, length);
-                int tl = getTotalLength(cuts, currUse);
-                int usage = getTotalLength(cuts, currUse);
-                int waste = tl == 0 ? minimumWaste + 1 : length - usage;
-
-                System.out.println("Waste is " + waste + " for length " + length + " and usage is " + usage);
-
-                if (waste < minimumWaste || (waste == minimumWaste && length > optimalLength)) {
-                    minimumWaste = waste;
-                    optimalLength = length;
-                    maxUse = currUse;
-                }
-            }
-
-            Segment s = new Segment(optimalLength);
-
-            for (int i = 0; i < maxUse.length; i++) {
-                if (maxUse[i] > 0) {
-                    s.addCut(new Cut(cuts[i], maxUse[i]));
-                }
-            }
-
-            boolean existingSegment = false;
-
-            for (Segment seg : segs) {
-                if (s.equals(seg)) {
-                    seg.setQuantity(seg.getQuantity() + 1);
-                    existingSegment = true;
-                }
-            }
-
-            if (!existingSegment) {
-                segs.add(s);
-            }
-
-            boolean cutsLeft = false;
-            for (int i = 0; i < nbrOfCuts.length; i++) {
-                nbrOfCuts[i] -= maxUse[i];
-                if (nbrOfCuts[i] > 0) {
-                    cutsLeft = true;
-                }
-            }
-
-            if (!cutsLeft) {
-                allCutsAllocated = true;
-            }
+        for (int c = 0; c < cutMeasurements.length; c++) {
+            cutMeasurements[c] = requestedCuts.get(c).getLength();
+            nbrOfCuts[c] = requestedCuts.get(c).getQuantity();
         }
 
-        Collections.sort(segs, new SegmentComparator());
-        lastSolution = segs;
-        return segs;
+        SegmentLink solution = new SegmentLink(lengths, cutMeasurements, nbrOfCuts);
+        lastSolution = compoundSegments(solution.getSegments());
+        return lastSolution;
     }
 
     public boolean isReady() {
@@ -212,5 +182,95 @@ public class CutPlanner {
 
     public List<Segment> getLastSolution() {
         return lastSolution;
+    }
+
+    class SegmentLink {
+
+        private SegmentLink next;
+        private Segment segment;
+
+        SegmentLink(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+            this(0, lengths, cutMeasurements, nbrOfCuts);
+        }
+
+        private SegmentLink(int length, int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+            int[] remainingCuts;
+
+            if (length > 0) {
+                segment = new Segment(length);
+                int[] maxUse = getMaximumUse(cutMeasurements, nbrOfCuts, length);
+
+                for (int i = 0; i < maxUse.length; i++) {
+                    if (maxUse[i] > 0) {
+                        segment.addCut(new Cut(cutMeasurements[i], maxUse[i]));
+                    }
+                }
+                remainingCuts = new int[nbrOfCuts.length];
+                for (int i = 0; i < nbrOfCuts.length; i++) {
+                    remainingCuts[i] = nbrOfCuts[i] - maxUse[i];
+                }
+            } else {
+                remainingCuts = nbrOfCuts;
+            }
+
+            if (getTotalLength(cutMeasurements, remainingCuts) > 0) {
+                int minimumWaste = Integer.MAX_VALUE;
+                int minimumNbrOfLengths = minimumWaste;
+
+                SegmentLink bestNext = null;
+                for (int len : lengths) {
+                    SegmentLink newSegLink = new SegmentLink(len, lengths, cutMeasurements, remainingCuts);
+                    final int newWaste = newSegLink.getWaste();
+                    int newNbrOfLengths = Integer.MAX_VALUE;
+                    if (newWaste < minimumWaste ||
+                            (newWaste == minimumWaste && (newNbrOfLengths = newSegLink.getNbrOfLengths()) < minimumNbrOfLengths)) {
+                        minimumWaste = newWaste;
+                        minimumNbrOfLengths = newNbrOfLengths;
+                        bestNext = newSegLink;
+                    }
+                }
+                next = bestNext;
+            }
+        }
+
+        public int getWaste() {
+            int freeSpace = segment == null ? 0 : segment.getFreeSpace();
+
+            if (next == null) {
+                return freeSpace;
+            } else {
+                return freeSpace + next.getWaste();
+            }
+        }
+
+        public int getNbrOfLengths() {
+            int thisSeg = segment == null ? 0 : 1;
+
+            if (next == null) {
+                return thisSeg;
+            } else {
+                return thisSeg + next.getNbrOfLengths();
+            }
+        }
+
+        public List<Segment> getSegments() {
+
+            if (segment == null) {
+                return next.getSegments();
+            }
+
+            List<Segment> rtn;
+
+            if (next == null) {
+                rtn = new ArrayList<>();
+                rtn.add(segment);
+                return rtn;
+            } else {
+                rtn = next.getSegments();
+                rtn.add(segment);
+                return rtn;
+            }
+        }
+
     }
 }
