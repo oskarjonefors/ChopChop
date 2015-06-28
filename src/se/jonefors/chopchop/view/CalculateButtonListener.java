@@ -36,31 +36,37 @@ public class CalculateButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         planner.clear();
-        prepareLengths();
-        prepareCuts();
-
-        if (planner.isReady()) {
+        if (prepareData() && planner.isReady()) {
             List<Segment> sol = planner.getOptimalSolution();
             cv.showSegments(sol, nameField.getText());
             cv.repaint();
         }
     }
 
-    private void prepareLengths() {
+    private boolean prepareData() {
         List<Integer> submittedLengths = new ArrayList<>();
+
+        int topLength = 0;
 
         for (LengthSpecification len : lengths) {
             if (len.active && len.length > 0 && !submittedLengths.contains(len.length)) {
                 submittedLengths.add(len.length);
                 planner.addLength(len.length);
+
+                topLength = Math.max(topLength, len.length);
             }
         }
-    }
 
-    private void prepareCuts() {
         Map<Integer, Integer> summarizedCuts = new HashMap<>();
 
         for (CutSpecification cut : cuts) {
+            if (cut.length > topLength) {
+                JOptionPane.showMessageDialog(cv, "Kapet på " + cut.length +
+                        " är längre än den maximalt aktiverade längden " +
+                        topLength, "Varning", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
             if (summarizedCuts.containsKey(cut.length)) {
                 summarizedCuts.replace(cut.length, summarizedCuts.get(cut.length) + cut.quantity);
             } else if (cut.length > 0 && cut.quantity > 0) {
@@ -71,5 +77,6 @@ public class CalculateButtonListener implements ActionListener {
         for (Integer length : summarizedCuts.keySet()) {
             planner.addRequestedCut(length, summarizedCuts.get(length));
         }
+        return true;
     }
 }
