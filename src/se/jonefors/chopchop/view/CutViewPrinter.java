@@ -13,8 +13,8 @@ import java.awt.print.PrinterException;
 
 public class CutViewPrinter implements Printable {
 
-    private java.util.List<Segment> segments;
-    private String label;
+    private final java.util.List<Segment> segments;
+    private final String label;
 
     public CutViewPrinter(java.util.List<Segment> segments, String label) {
         this.segments = segments;

@@ -2,6 +2,7 @@ package se.jonefors.chopchop.view;
 
 import se.jonefors.chopchop.Cut;
 import se.jonefors.chopchop.Segment;
+import se.jonefors.chopchop.SegmentComparator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -152,6 +153,7 @@ public class CutView extends JPanel {
     }
 
     public void showSegments(List<Segment> segments, String name) {
+        segments.sort(new SegmentComparator());
         this.segments = segments;
         this.name = name;
     }

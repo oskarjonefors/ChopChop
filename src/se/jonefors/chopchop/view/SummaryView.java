@@ -28,8 +28,8 @@ public class SummaryView extends JPanel {
     private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);
     private final Font measurementFont = new Font("Measurement", Font.BOLD, MEASUREMENT_FONT_SIZE);
     private final Font summaryHeaderFont = new Font("Summary", Font.BOLD, SUMMARY_HEADER_FONT_SIZE);
-    private List<Segment> segments;
-    private String label;
+    private final List<Segment> segments;
+    private final String label;
 
     public SummaryView(List<Segment> segments, String label) {
         this.segments = segments;

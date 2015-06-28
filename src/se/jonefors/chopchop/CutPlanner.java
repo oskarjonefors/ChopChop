@@ -16,6 +16,7 @@ public class CutPlanner {
     private final List<Cut> requestedCuts;
     private List<Segment> lastSolution;
 
+
     public CutPlanner() {
         availableLengths = new ArrayList<>();
         requestedCuts = new ArrayList<>();
@@ -88,7 +89,6 @@ public class CutPlanner {
     }
 
     private List<Segment> compoundSegments(List<Segment> segList) {
-        System.out.println("Received seglist of size " + segList.size());
         final List<Segment> compoundedSegList = new ArrayList<>();
 
         for (Segment seg : segList) {
@@ -107,7 +107,7 @@ public class CutPlanner {
         return compoundedSegList;
     }
 
-    public boolean addLength(int length) {
+    public void addLength(int length) {
         log.log(Level.FINE, "Added base segment of length " + length);
         if (length <= 0) {
             throw new IllegalArgumentException("addLength: length was " + length +
@@ -170,9 +170,7 @@ public class CutPlanner {
             cutMeasurements[c] = requestedCuts.get(c).getLength();
             nbrOfCuts[c] = requestedCuts.get(c).getQuantity();
         }
-
-        SegmentLink solution = new SegmentLink(lengths, cutMeasurements, nbrOfCuts);
-        lastSolution = compoundSegments(solution.getSegments());
+        lastSolution = compoundSegments(getIterativeSolution(lengths, cutMeasurements, nbrOfCuts));
         return lastSolution;
     }
 
@@ -184,92 +182,144 @@ public class CutPlanner {
         return lastSolution;
     }
 
-    class SegmentLink {
+    public List<Segment> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
 
-        private SegmentLink next;
-        private Segment segment;
+        List<SegmentLink> segLinks = new ArrayList<>();
 
-        SegmentLink(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
-            this(0, lengths, cutMeasurements, nbrOfCuts);
-        }
-
-        private SegmentLink(int length, int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
-            int[] remainingCuts;
-
-            if (length > 0) {
-                segment = new Segment(length);
-                int[] maxUse = getMaximumUse(cutMeasurements, nbrOfCuts, length);
+        for (int length : lengths) {
+            int[] maxUse = getMaximumUse(cutMeasurements, nbrOfCuts, length);
+            if (getTotalLength(cutMeasurements, maxUse) > 0) {
+                final Segment segment = new Segment(length);
 
                 for (int i = 0; i < maxUse.length; i++) {
                     if (maxUse[i] > 0) {
                         segment.addCut(new Cut(cutMeasurements[i], maxUse[i]));
                     }
                 }
-                remainingCuts = new int[nbrOfCuts.length];
+                int[] remainingCuts = new int[nbrOfCuts.length];
                 for (int i = 0; i < nbrOfCuts.length; i++) {
                     remainingCuts[i] = nbrOfCuts[i] - maxUse[i];
                 }
-            } else {
-                remainingCuts = nbrOfCuts;
+
+                segLinks.add(new SegmentLink(null, segment, remainingCuts));
             }
+        }
 
-            if (getTotalLength(cutMeasurements, remainingCuts) > 0) {
-                int minimumWaste = Integer.MAX_VALUE;
-                int minimumNbrOfLengths = minimumWaste;
+        int bestWaste = Integer.MAX_VALUE;
+        int bestNbrOfLengths = Integer.MAX_VALUE;
+        SegmentLink bestRoot = null;
 
-                SegmentLink bestNext = null;
-                for (int len : lengths) {
-                    SegmentLink newSegLink = new SegmentLink(len, lengths, cutMeasurements, remainingCuts);
-                    final int newWaste = newSegLink.getWaste();
-                    int newNbrOfLengths = Integer.MAX_VALUE;
-                    if (newWaste < minimumWaste ||
-                            (newWaste == minimumWaste && (newNbrOfLengths = newSegLink.getNbrOfLengths()) < minimumNbrOfLengths)) {
-                        minimumWaste = newWaste;
-                        minimumNbrOfLengths = newNbrOfLengths;
-                        bestNext = newSegLink;
+        for (SegmentLink segLink : segLinks) {
+            SegmentLink currLink = segLink;
+
+            while (currLink != null && !currLink.searched) {
+                if(currLink.spawnedChildren) {
+                    boolean allSearched = true;
+                    for (SegmentLink next : currLink.children) {
+                        if (!next.searched) {
+                            currLink = next;
+                            allSearched = false;
+                            break;
+                        }
+                    }
+
+                    if (allSearched) {
+
+                        currLink.waste = currLink.segment.getFreeSpace();
+                        currLink.nbrOfLengths = 1;
+                        if (currLink.children.size() > 0) {
+                            SegmentLink topChild = null;
+                            int minimumWaste = Integer.MAX_VALUE;
+                            int minimumNbrOfLengths = Integer.MAX_VALUE;
+                            for (SegmentLink child : currLink.children) {
+                                if (child.waste < minimumWaste || (child.waste == minimumWaste && child.nbrOfLengths < minimumNbrOfLengths)) {
+                                    minimumWaste = child.waste;
+                                    minimumNbrOfLengths = child.nbrOfLengths;
+                                    topChild = child;
+                                }
+                            }
+
+                            final int topChildWaste = topChild == null ? 0 : topChild.waste;
+                            final int topChildNbrOfLengths = topChild == null ? 0 : topChild.nbrOfLengths;
+
+                            currLink.waste += topChildWaste;
+                            currLink.nbrOfLengths += topChildNbrOfLengths;
+                            currLink.next = topChild;
+                        }
+
+                        currLink.searched = true;
+                        currLink = currLink.parent;
+                    }
+                } else {
+                    currLink.spawnedChildren = true;
+
+                    for (int length : lengths) {
+                        int[] maxUse = getMaximumUse(cutMeasurements, currLink.remainingCuts, length);
+                        if (getTotalLength(cutMeasurements, maxUse) > 0) {
+                            final Segment segment = new Segment(length);
+
+                            for (int i = 0; i < maxUse.length; i++) {
+                                if (maxUse[i] > 0) {
+                                    segment.addCut(new Cut(cutMeasurements[i], maxUse[i]));
+                                }
+                            }
+                            int[] remainingCuts = new int[nbrOfCuts.length];
+                            for (int i = 0; i < nbrOfCuts.length; i++) {
+                                remainingCuts[i] = currLink.remainingCuts[i] - maxUse[i];
+                            }
+
+                            final SegmentLink newLink = new SegmentLink(currLink, segment, remainingCuts);
+
+                            currLink.children.add(newLink);
+                            if (getTotalLength(cutMeasurements, remainingCuts) == 0) {
+                                newLink.waste = segment.getFreeSpace();
+                                newLink.searched = true;
+                                newLink.nbrOfLengths = 1;
+                            } else {
+                                currLink = newLink;
+                            }
+
+                        }
                     }
                 }
-                next = bestNext;
+            }
+            if (segLink.waste < bestWaste ||
+                    (segLink.waste == bestWaste && segLink.nbrOfLengths < bestNbrOfLengths)) {
+                bestRoot = segLink;
+                bestWaste = segLink.waste;
+                bestNbrOfLengths = segLink.nbrOfLengths;
             }
         }
 
-        public int getWaste() {
-            int freeSpace = segment == null ? 0 : segment.getFreeSpace();
-
-            if (next == null) {
-                return freeSpace;
-            } else {
-                return freeSpace + next.getWaste();
-            }
+        List<Segment> rtn = new ArrayList<>();
+        while (bestRoot != null) {
+            rtn.add(bestRoot.segment);
+            bestRoot = bestRoot.next;
         }
 
-        public int getNbrOfLengths() {
-            int thisSeg = segment == null ? 0 : 1;
+        return compoundSegments(rtn);
+    }
 
-            if (next == null) {
-                return thisSeg;
-            } else {
-                return thisSeg + next.getNbrOfLengths();
-            }
-        }
+    private class SegmentLink {
 
-        public List<Segment> getSegments() {
+        private final List<SegmentLink> children;
+        private final SegmentLink parent;
+        private SegmentLink next;
+        private final Segment segment;
+        private boolean searched;
+        private boolean spawnedChildren;
+        private final int[] remainingCuts;
+        private int waste;
+        private int nbrOfLengths;
 
-            if (segment == null) {
-                return next.getSegments();
-            }
-
-            List<Segment> rtn;
-
-            if (next == null) {
-                rtn = new ArrayList<>();
-                rtn.add(segment);
-                return rtn;
-            } else {
-                rtn = next.getSegments();
-                rtn.add(segment);
-                return rtn;
-            }
+        private SegmentLink(SegmentLink parent, Segment segment, int[] remainingCuts) {
+            this.parent = parent;
+            this.segment = segment;
+            this.remainingCuts = remainingCuts;
+            children = new ArrayList<>();
+            searched = false;
+            spawnedChildren = false;
+            waste = -1;
         }
 
     }

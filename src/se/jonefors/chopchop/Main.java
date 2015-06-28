@@ -2,7 +2,6 @@ package se.jonefors.chopchop;
 
 import se.jonefors.chopchop.view.MainWindow;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 public class Main {

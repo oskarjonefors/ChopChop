@@ -16,8 +16,8 @@ import java.util.List;
 
 public class PrintButtonListener implements ActionListener {
 
-    private CutPlanner planner;
-    private JTextField label;
+    private final CutPlanner planner;
+    private final JTextField label;
 
     public PrintButtonListener(CutPlanner planner, JTextField label) {
         this.planner = planner;
