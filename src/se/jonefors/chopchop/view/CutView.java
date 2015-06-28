@@ -6,9 +6,8 @@ import se.jonefors.chopchop.SegmentComparator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Oskar Jönefors
@@ -71,7 +70,13 @@ public class CutView extends JPanel {
         int summaryX = MARGIN + SECTION_HEIGHT + g.getFontMetrics().stringWidth("Materialåtgång");
 
         g.setFont(quantityFont);
-        for (Integer len : segmentSummary.keySet()) {
+
+        List<Integer> segLengths = new ArrayList<>();
+        segLengths.addAll(segmentSummary.keySet());
+        Collections.sort(segLengths);
+        Collections.reverse(segLengths);
+
+        for (Integer len : segLengths) {
             g.drawString(segmentSummary.get(len) + " x " + len, summaryX, currY);
             currY += g.getFontMetrics().getHeight();
         }
@@ -79,7 +84,8 @@ public class CutView extends JPanel {
         for (Segment s : segments) {
             currY += SECTION_HEIGHT;
             int freeSpace = s.getFreeSpace();
-            String fs = freeSpace > 0 ? ", spill " + s.getFreeSpace() : "";
+            String fs = freeSpace > 0 ? ", spill " + s.getFreeSpace() + " per längd, " +
+                    (s.getFreeSpace() * s.getQuantity()) + " totalt" : "";
 
             g.setFont(measurementFont);
             int maxHeight = 0;

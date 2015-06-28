@@ -77,6 +77,11 @@ public class CutPlanner {
 
         }
 
+        /*System.out.println("Optimal solution for length " + baseLength + " and cuts: ");
+        for (int i = 0; i < cuts.length; i++) {
+            System.out.println(optimalSolution[i] + " out of " + nbrOfCuts[i] + " x " + cuts[i]);
+        } */
+
         return optimalSolution;
     }
 
@@ -157,6 +162,7 @@ public class CutPlanner {
         }
 
         Collections.sort(availableLengths);
+        Collections.reverse(availableLengths);
 
         int[] lengths = new int[availableLengths.size()];
         for (int i = 0; i < lengths.length; i++) {
@@ -253,9 +259,19 @@ public class CutPlanner {
                 } else {
                     currLink.spawnedChildren = true;
 
+
+                    int minCWaste = Integer.MAX_VALUE;
+                    Segment minCWasteSeg = null;
+                    int maxCUsage = 0;
+                    Segment maxCUsageSeg = null;
+
+
+
                     for (int length : lengths) {
                         int[] maxUse = getMaximumUse(cutMeasurements, currLink.remainingCuts, length);
-                        if (getTotalLength(cutMeasurements, maxUse) > 0) {
+                        int totalLength = getTotalLength(cutMeasurements, maxUse);
+
+                        if (totalLength > 0) {
                             final Segment segment = new Segment(length);
 
                             for (int i = 0; i < maxUse.length; i++) {
@@ -290,6 +306,23 @@ public class CutPlanner {
                 bestNbrOfLengths = segLink.nbrOfLengths;
             }
         }
+
+        System.out.println("Solution candidates: ");
+        for (SegmentLink s : segLinks) {
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            System.out.println(s.segment.getLength() + " with total waste " + s.waste +
+                    " and total no of lengths " + s.nbrOfLengths);
+            System.out.println("-------------------------------");
+            System.out.println(s.segment);
+
+            SegmentLink sc = s.next;
+            while (sc != null) {
+                System.out.println("-------------------------------");
+                System.out.println(sc.segment);
+                sc = sc.next;
+            }
+        }
+        System.out.println("Best one is " + bestRoot.segment);
 
         List<Segment> rtn = new ArrayList<>();
         while (bestRoot != null) {
