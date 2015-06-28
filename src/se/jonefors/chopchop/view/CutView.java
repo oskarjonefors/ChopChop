@@ -39,10 +39,6 @@ public class CutView extends JPanel {
 
     public CutView() {
         this.setBackground(Color.WHITE);
-        name = "";
-        this.setLayout(new GridLayout());
-        totHeight = 0;
-        this.setLayout(new FlowLayout());
     }
 
     private void drawSegments(Graphics g, String label) {
@@ -139,7 +135,7 @@ public class CutView extends JPanel {
             currY += secHeight + ROW_SPACING;
         }
         totHeight = currY;
-        this.setPreferredSize(new Dimension(this.getWidth(), totHeight));
+        this.setPreferredSize(new Dimension((int)this.getPreferredSize().getWidth(), totHeight));
         this.revalidate();
     }
 

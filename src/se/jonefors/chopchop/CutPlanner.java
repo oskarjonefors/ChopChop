@@ -113,7 +113,7 @@ public class CutPlanner {
             throw new IllegalArgumentException("addLength: length was " + length +
                     ". May not be 0 or negative!");
         }
-        return availableLengths.add(length);
+        availableLengths.add(length);
     }
 
     public void clear() {
