@@ -1,6 +1,6 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.CutPlanner;
+import se.jonefors.chopchop.model.CutPlanner;
 
 import javax.swing.*;
 import java.awt.*;

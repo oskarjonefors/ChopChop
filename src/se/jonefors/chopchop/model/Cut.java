@@ -1,4 +1,4 @@
-package se.jonefors.chopchop;
+package se.jonefors.chopchop.model;
 
 /**
  * @author Oskar Jönefors

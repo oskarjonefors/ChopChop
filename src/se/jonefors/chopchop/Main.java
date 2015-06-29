@@ -1,5 +1,6 @@
 package se.jonefors.chopchop;
 
+import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.view.MainWindow;
 
 import java.util.logging.Logger;

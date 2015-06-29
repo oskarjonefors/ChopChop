@@ -1,4 +1,4 @@
-package se.jonefors.chopchop;
+package se.jonefors.chopchop.model;
 
 import java.util.*;
 import java.util.logging.Level;

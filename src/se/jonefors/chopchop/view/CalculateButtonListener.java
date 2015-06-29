@@ -1,7 +1,7 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.CutPlanner;
-import se.jonefors.chopchop.Segment;
+import se.jonefors.chopchop.model.CutPlanner;
+import se.jonefors.chopchop.model.Segment;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
