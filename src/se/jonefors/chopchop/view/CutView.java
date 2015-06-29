@@ -1,8 +1,8 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.model.Cut;
-import se.jonefors.chopchop.model.Segment;
-import se.jonefors.chopchop.model.SegmentComparator;
+import se.jonefors.chopchop.model.representations.Cut;
+import se.jonefors.chopchop.model.representations.Segment;
+import se.jonefors.chopchop.model.representations.SegmentComparator;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,14 +1,14 @@
-package se.jonefors.chopchop.model;
+package se.jonefors.chopchop.model.representations;
 
 /**
  * @author Oskar Jönefors
  */
 
 public class Cut {
-    final int length;
-    int qty;
+    private final int length;
+    private int qty;
 
-    Cut(int length, int qty) {
+    public Cut(int length, int qty) {
         this.length = length;
         this.qty = qty;
     }
