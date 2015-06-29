@@ -183,6 +183,11 @@ public class CutPlanner {
         requestedCuts.add(new Cut(length, quantity));
     }
 
+    /**
+     * Get a list of segments with cuts distributed in such a fashion that the free space on all
+     * segments in the solution is minimized.
+     * @return A list of Segments.
+     */
     public List<Segment> getOptimalSolution() {
         if (availableLengths.isEmpty()) {
             throw new IllegalArgumentException("getOptimalSolution: No optimal solution can be " +
@@ -222,15 +227,24 @@ public class CutPlanner {
         return lastSolution;
     }
 
+    /**
+     * Check if the CutPlanner has received cut measurements and available lengths.
+     *
+     * @return True if both cuts and lengths have been added,false otherwise.
+     */
     public boolean isReady() {
         return !availableLengths.isEmpty() && !requestedCuts.isEmpty();
     }
 
+    /**
+     * Get the last solution calculated, or null if no solution has been calculated yet.
+     * @return A list of Segments, or null.
+     */
     public List<Segment> getLastSolution() {
         return lastSolution;
     }
 
-    public List<Segment> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+    private List<Segment> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
 
         List<SegmentLink> segLinks = new ArrayList<>();
 
