@@ -17,7 +17,7 @@ public class CutView extends JPanel {
 
     private final static Color FONT_COLOR = Color.BLACK;
     private final static Color BASE_SEGMENT_COLOR = Color.BLUE;
-    private final static Color CUT_COLOR = Color.LIGHT_GRAY;
+    private final static Color CUT_COLOR = Color.WHITE;
     private final static Color MEASUREMENT_FONT_COLOR = Color.BLACK;
     private final static int MEASUREMENT_FONT_SIZE = 12;
     private final static int SUMMARY_HEADER_FONT_SIZE = 18;
@@ -158,7 +158,7 @@ public class CutView extends JPanel {
     }
 
     public void showSegments(List<Segment> segments, String name) {
-        segments.sort(new SegmentComparator());
+        Collections.sort(segments, new SegmentComparator());
         this.segments = segments;
         this.name = name;
     }

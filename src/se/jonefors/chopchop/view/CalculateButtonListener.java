@@ -68,7 +68,11 @@ public class CalculateButtonListener implements ActionListener {
             }
 
             if (summarizedCuts.containsKey(cut.length)) {
-                summarizedCuts.replace(cut.length, summarizedCuts.get(cut.length) + cut.quantity);
+
+                final int prevQty = summarizedCuts.get(cut.length);
+                summarizedCuts.remove(cut.length);
+                summarizedCuts.put(cut.length, prevQty + cut.quantity);
+
             } else if (cut.length > 0 && cut.quantity > 0) {
                 summarizedCuts.put(cut.length, cut.quantity);
             }
