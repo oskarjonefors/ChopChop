@@ -49,6 +49,7 @@ public class Segment {
         for (Cut c : cuts.values()) {
             cutsCpy.add(c);
         }
+        Collections.sort(cutsCpy, new CutComparator());
         return cutsCpy;
     }
 
