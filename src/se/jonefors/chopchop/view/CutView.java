@@ -99,38 +99,41 @@ public class CutView extends JPanel {
             }
 
             int secHeight = Math.max(SECTION_HEIGHT, maxHeight);
+            int recStartY = currY + MARGIN;
 
             g.setFont(quantityFont);
             g.setColor(FONT_COLOR);
             g.drawString(s.getQuantity() + " x " + s.getLength() + fs + ":", MARGIN, currY);
             g.setColor(BASE_SEGMENT_COLOR);
-            g.fillRect(MARGIN, currY + MARGIN, (int)(scale * s.getLength()), secHeight);
+            g.fillRect(MARGIN, recStartY, (int)(scale * s.getLength()), secHeight);
 
 
             int currX = MARGIN + 1;
+
 
             g.setFont(measurementFont);
             for (Cut c : s.getCuts()) {
                 for (int i = 0; i < c.getQuantity(); i++) {
                     int segW = (int)(scale * c.getLength() - 2);
+
                     g.setColor(CUT_COLOR);
-                    g.fillRect(currX, currY + MARGIN + 2,
+                    g.fillRect(currX, recStartY + 2,
                             segW, secHeight - 4);
                     g.setColor(MEASUREMENT_FONT_COLOR);
                     final String measurementString = Integer.toString(c.getLength());
                     final int measurementStringWidth = g.getFontMetrics().stringWidth(measurementString);
                     int centerXpos = currX + (segW / 2);
+                    int height = g.getFontMetrics().getHeight() - 2;
                     if (measurementStringWidth + 4 > scale * c.getLength()) {
                         centerXpos -=  (g.getFontMetrics().stringWidth("0") / 2);
-                        int height = g.getFontMetrics().getHeight() - 2;
-                        int verticalY = currY + SECTION_HEIGHT + 2 - height;
+                        int verticalY = currY + SECTION_HEIGHT - (height / 2);
                         for (char ch : measurementString.toCharArray()) {
                             g.drawString(String.valueOf(ch), centerXpos, verticalY);
                             verticalY += height;
                         }
                     } else {
                         centerXpos -=  measurementStringWidth / 2;
-                        g.drawString(measurementString, centerXpos, currY + SECTION_HEIGHT - 4);
+                        g.drawString(measurementString, centerXpos, recStartY + (secHeight - 4 + height)/2);
                     }
                     currX += segW + 2;
                 }
