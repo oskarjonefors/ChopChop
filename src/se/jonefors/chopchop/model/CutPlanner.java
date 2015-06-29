@@ -22,7 +22,7 @@ public class CutPlanner {
         log.log(Level.FINE, "Initialized CutPlanner");
     }
 
-    private int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
+    private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
 
         int[] maxNbrOfCuts = new int[nbrOfCuts.length];
 
@@ -85,7 +85,7 @@ public class CutPlanner {
         return optimalSolution;
     }
 
-    private int getTotalLength(int[] measurements, int[] nbrOfCuts) {
+    private static int getTotalLength(int[] measurements, int[] nbrOfCuts) {
         int length = 0;
         for (int cut = 0; cut < nbrOfCuts.length; cut++) {
 
@@ -99,9 +99,20 @@ public class CutPlanner {
         return length;
     }
 
-    private List<Segment> compoundSegments(List<Segment> segList) {
-        final List<Segment> compoundedSegList = new ArrayList<>();
+    private static List<Segment> compoundSegments(List<SegDef> segDefList, int[] cutMeasurements) {
+        final List<Segment> segList = new ArrayList<>();
 
+        for (SegDef def : segDefList) {
+            final Segment segment = new Segment(def.length);
+            for (int i = 0; i < def.usage.length; i++) {
+                if (def.usage[i] > 0) {
+                    segment.addCut(new Cut(cutMeasurements[i], def.usage[i]));
+                }
+            }
+            segList.add(segment);
+        }
+
+        final List<Segment> compoundedSegList = new ArrayList<>();
         for (Segment seg : segList) {
             boolean existingSegment = false;
             for (Segment com : compoundedSegList) {
@@ -118,7 +129,7 @@ public class CutPlanner {
         return compoundedSegList;
     }
 
-    private List<SegDef> getSuitableLengths(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+    private static List<SegDef> getSuitableLengths(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
         List<SegDef> rtn = new ArrayList<>();
 
         int minimumWaste = Integer.MAX_VALUE;
@@ -223,7 +234,8 @@ public class CutPlanner {
             cutMeasurements[c] = requestedCuts.get(c).getLength();
             nbrOfCuts[c] = requestedCuts.get(c).getQuantity();
         }
-        lastSolution = compoundSegments(getIterativeSolution(lengths, cutMeasurements, nbrOfCuts));
+        lastSolution = compoundSegments(getIterativeSolution(lengths, cutMeasurements, nbrOfCuts),
+                cutMeasurements);
         return lastSolution;
     }
 
@@ -244,24 +256,17 @@ public class CutPlanner {
         return lastSolution;
     }
 
-    private List<Segment> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+    private List<SegDef> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
 
         List<SegmentLink> segLinks = new ArrayList<>();
 
         for (SegDef def : getSuitableLengths(lengths, cutMeasurements, nbrOfCuts)) {
-                final Segment segment = new Segment(def.length);
-
-                for (int i = 0; i < def.usage.length; i++) {
-                    if (def.usage[i] > 0) {
-                        segment.addCut(new Cut(cutMeasurements[i], def.usage[i]));
-                    }
-                }
                 int[] remainingCuts = new int[nbrOfCuts.length];
                 for (int i = 0; i < nbrOfCuts.length; i++) {
                     remainingCuts[i] = nbrOfCuts[i] - def.usage[i];
                 }
 
-                segLinks.add(new SegmentLink(null, segment, remainingCuts));
+                segLinks.add(new SegmentLink(null, def, remainingCuts));
         }
 
         int bestWaste = Integer.MAX_VALUE;
@@ -284,7 +289,7 @@ public class CutPlanner {
 
                     if (allSearched) {
 
-                        currLink.waste = currLink.segment.getFreeSpace();
+                        currLink.waste = getFreeSpace(currLink.segdef, cutMeasurements);
                         currLink.nbrOfLengths = 1;
                         if (currLink.children.size() > 0) {
                             SegmentLink topChild = null;
@@ -313,21 +318,14 @@ public class CutPlanner {
                     currLink.spawnedChildren = true;
                     for (SegDef def : getSuitableLengths(lengths, cutMeasurements, currLink.remainingCuts)) {
                         if (getTotalLength(cutMeasurements, def.usage) > 0) {
-                            final Segment segment = new Segment(def.length);
-                            for (int i = 0; i < def.usage.length; i++) {
-                                if (def.usage[i] > 0) {
-                                    segment.addCut(new Cut(cutMeasurements[i], def.usage[i]));
-                                }
-                            }
                             int[] remainingCuts = new int[nbrOfCuts.length];
                             for (int i = 0; i < nbrOfCuts.length; i++) {
                                 remainingCuts[i] = currLink.remainingCuts[i] - def.usage[i];
                             }
-
-                            final SegmentLink newLink = new SegmentLink(currLink, segment, remainingCuts);
+                            final SegmentLink newLink = new SegmentLink(currLink, def, remainingCuts);
                             currLink.children.add(newLink);
                             if (getTotalLength(cutMeasurements, remainingCuts) == 0) {
-                                newLink.waste = segment.getFreeSpace();
+                                newLink.waste = getFreeSpace(def, cutMeasurements);
                                 newLink.searched = true;
                                 newLink.nbrOfLengths = 1;
                             }
@@ -343,30 +341,37 @@ public class CutPlanner {
             }
         }
 
-        List<Segment> rtn = new ArrayList<>();
+        List<SegDef> rtn = new ArrayList<>();
         while (bestRoot != null) {
-            rtn.add(bestRoot.segment);
+            rtn.add(bestRoot.segdef);
             bestRoot = bestRoot.next;
         }
 
-        return compoundSegments(rtn);
+        return rtn;
     }
 
-    private class SegmentLink {
+    private static int getFreeSpace(SegDef def, int[] cutMeasurements) {
+        int remainingSpace = def.length;
+        for (int cut = 0; cut < cutMeasurements.length; cut++) {
+            remainingSpace -= def.usage[cut] * cutMeasurements[cut];
+        }
+        return remainingSpace;
+    }
 
+    private static class SegmentLink {
         private final List<SegmentLink> children;
         private final SegmentLink parent;
         private SegmentLink next;
-        private final Segment segment;
+        private final SegDef segdef;
         private boolean searched;
         private boolean spawnedChildren;
         private final int[] remainingCuts;
         private int waste;
         private int nbrOfLengths;
 
-        private SegmentLink(SegmentLink parent, Segment segment, int[] remainingCuts) {
+        private SegmentLink(SegmentLink parent, SegDef segdef, int[] remainingCuts) {
             this.parent = parent;
-            this.segment = segment;
+            this.segdef = segdef;
             this.remainingCuts = remainingCuts;
             children = new ArrayList<>();
             searched = false;
@@ -376,7 +381,7 @@ public class CutPlanner {
 
     }
 
-    private class SegDef {
+    private static class SegDef {
         private int length;
         private int[] usage;
     }
