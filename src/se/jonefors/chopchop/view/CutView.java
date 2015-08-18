@@ -1,5 +1,6 @@
 package se.jonefors.chopchop.view;
 
+import se.jonefors.chopchop.model.SolverListener;
 import se.jonefors.chopchop.model.representations.Cut;
 import se.jonefors.chopchop.model.representations.Segment;
 import se.jonefors.chopchop.model.representations.SegmentComparator;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Oskar Jönefors
  */
 
-public class CutView extends JPanel {
+public class CutView extends JPanel implements SolverListener {
 
     private final static Color FONT_COLOR = Color.BLACK;
     private final static Color BASE_SEGMENT_COLOR = Color.BLUE;
@@ -161,5 +162,21 @@ public class CutView extends JPanel {
         Collections.sort(segments, new SegmentComparator());
         this.segments = segments;
         this.name = name;
+        repaint();
+    }
+
+    @Override
+    public void notifyProcessStarted() {
+
+    }
+
+    @Override
+    public void notifyProcessAborted() {
+
+    }
+
+    @Override
+    public void notifySolution(List<Segment> solution, String label) {
+        showSegments(solution, label);
     }
 }

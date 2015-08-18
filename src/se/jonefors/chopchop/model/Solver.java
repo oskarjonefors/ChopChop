@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 class Solver {
     private static final Logger log = Logger.getLogger(Solver.class.getName());
+    private static boolean cancel = false;
 
     static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
 
@@ -40,7 +41,7 @@ class Solver {
         int minimumWaste = baseLength;
         boolean triedAllSolutions = false;
 
-        while (!triedAllSolutions) {
+        while (!triedAllSolutions && !cancel) {
 
             if (currentIndex < attempt.length && attempt[currentIndex] < maxNbrOfCuts[currentIndex]) {
                     /* Add one more of the current cut if possible */
@@ -74,6 +75,10 @@ class Solver {
                 log.log(Level.FINER, "Found new solution with a waste of " + minimumWaste);
             }
 
+        }
+
+        if (cancel) {
+            return null;
         }
 
         return optimalSolution;
@@ -127,6 +132,9 @@ class Solver {
         SegDef maximumUsageDef = new SegDef();
         maximumUsageDef.length = Integer.MAX_VALUE;
         for (int length : lengths) {
+            if (cancel) {
+                break;
+            }
             int[] maxUse = getMaximumUse(cutMeasurements, nbrOfCuts, length);
             int usedLength = getTotalLength(cutMeasurements, maxUse);
 
@@ -162,6 +170,7 @@ class Solver {
     }
 
     static List<Segment> getOptimalSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+        cancel = false;
         return compoundSegments(getIterativeSolution(
                 lengths, cutMeasurements, nbrOfCuts), cutMeasurements);
     }
@@ -171,6 +180,9 @@ class Solver {
         List<SegDefLink> segLinks = new ArrayList<>();
 
         for (SegDef def : getSuitableLengths(lengths, cutMeasurements, nbrOfCuts)) {
+            if (cancel) {
+                break;
+            }
                 int[] remainingCuts = new int[nbrOfCuts.length];
                 for (int i = 0; i < nbrOfCuts.length; i++) {
                     remainingCuts[i] = nbrOfCuts[i] - def.usage[i];
@@ -184,9 +196,13 @@ class Solver {
         SegDefLink bestRoot = null;
 
         for (SegDefLink segLink : segLinks) {
+            if (cancel) {
+                break;
+            }
+
             SegDefLink currLink = segLink;
 
-            while (currLink != null && !currLink.searched) {
+            while (currLink != null && !currLink.searched && !cancel) {
                 if(currLink.spawnedChildren) {
                     boolean allSearched = true;
                     for (SegDefLink next : currLink.children) {
@@ -224,7 +240,7 @@ class Solver {
                         currLink.searched = true;
                         currLink = currLink.parent;
                     }
-                } else {
+                } else if (!cancel) {
                     currLink.spawnedChildren = true;
                     for (SegDef def : getSuitableLengths(lengths, cutMeasurements, currLink.remainingCuts)) {
                         if (getTotalLength(cutMeasurements, def.usage) > 0) {
@@ -252,12 +268,16 @@ class Solver {
         }
 
         List<SegDef> rtn = new ArrayList<>();
-        while (bestRoot != null) {
+        while (bestRoot != null && !cancel) {
             rtn.add(bestRoot.segdef);
             bestRoot = bestRoot.next;
         }
 
-        return rtn;
+        return cancel == true ? null : rtn;
+    }
+
+    static void abort() {
+        cancel = true;
     }
 
     static class SegDefLink {

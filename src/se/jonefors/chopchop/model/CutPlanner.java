@@ -18,12 +18,21 @@ public class CutPlanner {
     private final List<Integer> availableLengths;
     private final List<Cut> requestedCuts;
     private List<Segment> lastSolution;
+    private static CutPlanner instance;
 
-    public CutPlanner() {
+    private CutPlanner() {
         availableLengths = new ArrayList<>();
         requestedCuts = new ArrayList<>();
         log.log(Level.FINE, "Initialized CutPlanner");
     }
+
+    public static CutPlanner getSharedInstance() {
+        if (instance == null) {
+            instance = new CutPlanner();
+        }
+        return instance;
+    }
+
 
     public void addLength(int length) {
         log.log(Level.FINE, "Added base segment of length " + length);
@@ -113,6 +122,10 @@ public class CutPlanner {
      */
     public List<Segment> getLastSolution() {
         return lastSolution;
+    }
+
+    public void cancel() {
+        Solver.abort();
     }
 
 }
