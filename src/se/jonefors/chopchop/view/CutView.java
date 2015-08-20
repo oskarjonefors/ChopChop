@@ -24,7 +24,7 @@ public class CutView extends JPanel implements SolverListener {
     private final static int SUMMARY_HEADER_FONT_SIZE = 18;
 
     private final static int SECTION_HEIGHT = 30;
-    private final static int MARGIN = 10;
+    private final static int MARGIN = 15;
     private final static int ROW_SPACING = 20;
 
     private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
@@ -45,9 +45,10 @@ public class CutView extends JPanel implements SolverListener {
 
         g.setColor(FONT_COLOR);
         g.setFont(headerFont);
-        g.drawString("Kapspecifikation: " + label, 0, 30);
+        int currY = g.getFontMetrics().getHeight() + MARGIN;
+        g.drawString("Kapspecifikation: " + label, MARGIN, currY);
 
-        int currY = SECTION_HEIGHT * 3;
+        currY += ROW_SPACING;
         final double maximumSegmentWidth = this.getWidth() - MARGIN * 4;
         final double scale = maximumSegmentWidth / segments.get(0).getLength();
 
@@ -66,6 +67,7 @@ public class CutView extends JPanel implements SolverListener {
             }
         }
 
+        currY += ROW_SPACING;
         g.setFont(summaryHeaderFont);
         g.drawString("Materialåtgång", MARGIN, currY);
         int summaryX = MARGIN + SECTION_HEIGHT + g.getFontMetrics().stringWidth("Materialåtgång");
@@ -100,7 +102,7 @@ public class CutView extends JPanel implements SolverListener {
             }
 
             int secHeight = Math.max(SECTION_HEIGHT, maxHeight);
-            int recStartY = currY + MARGIN;
+            int recStartY = currY + ROW_SPACING;
 
             g.setFont(quantityFont);
             g.setColor(FONT_COLOR);
@@ -127,7 +129,8 @@ public class CutView extends JPanel implements SolverListener {
                     int height = g.getFontMetrics().getHeight() - 2;
                     if (measurementStringWidth + 4 > scale * c.getLength()) {
                         centerXpos -=  (g.getFontMetrics().stringWidth("0") / 2);
-                        int verticalY = currY + SECTION_HEIGHT - (height / 2);
+                        int verticalY = currY + SECTION_HEIGHT + (height / 4);
+
                         for (char ch : measurementString.toCharArray()) {
                             g.drawString(String.valueOf(ch), centerXpos, verticalY);
                             verticalY += height;
@@ -167,12 +170,14 @@ public class CutView extends JPanel implements SolverListener {
 
     @Override
     public void notifyProcessStarted() {
-
+        segments = null;
+        repaint();
     }
 
     @Override
     public void notifyProcessAborted() {
-
+        segments = null;
+        repaint();
     }
 
     @Override
