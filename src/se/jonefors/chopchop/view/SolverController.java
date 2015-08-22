@@ -54,8 +54,6 @@ public class SolverController implements ListenableSolver, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        System.out.println("EVENT " + actionEvent.getActionCommand());
-
         switch (actionEvent.getActionCommand()) {
             case "CALCULATE":
                 if (verifyData()) {
