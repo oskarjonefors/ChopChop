@@ -23,8 +23,6 @@ public class ButtonPanel extends JPanel implements SolverListener {
 
     public ButtonPanel() {
 
-        listeners = new ArrayList<>();
-
         buttonMode = new JPanel(new FlowLayout());
 
         calcButton = new JButton("Beräkna kapschema");
