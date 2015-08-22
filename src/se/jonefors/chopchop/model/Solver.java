@@ -48,20 +48,8 @@ class Solver {
                 attempt[currentIndex]++;
                 currentIndex = 0;
             } else if (currentIndex < attempt.length) {
-                int initialIndex = currentIndex;
-                boolean foundNextIndex = false;
-                while (currentIndex < attempt.length && !foundNextIndex) {
-                    if (attempt[currentIndex] == maxNbrOfCuts[currentIndex]) {
-                        currentIndex++;
-                    } else {
-                        foundNextIndex = true;
-                    }
-                }
-                if (foundNextIndex) {
-                    attempt[initialIndex] = 0;
-                    attempt[currentIndex]++;
-                    currentIndex = 0;
-                }
+                attempt[currentIndex] = 0;
+                currentIndex++;
             } else {
                 triedAllSolutions = true;
             }
