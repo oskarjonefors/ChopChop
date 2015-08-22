@@ -19,10 +19,10 @@ import java.util.List;
 
 public class SolverController implements ListenableSolver, ActionListener {
 
-    private List<SolverListener> listeners;
-    private List<CutSpecification> cuts;
-    private List<LengthSpecification> lengths;
-    private JTextField labelField;
+    private final List<SolverListener> listeners;
+    private final List<CutSpecification> cuts;
+    private final List<LengthSpecification> lengths;
+    private final JTextField labelField;
     private SolverWorker worker;
 
     public SolverController(List<CutSpecification> cuts, List<LengthSpecification> lengths,

@@ -49,13 +49,11 @@ class SolverWorker extends SwingWorker<List<Segment>, Double> implements Listena
             for (SolverListener listener : listeners) {
                 listener.notifySolution(get(), label);
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | CancellationException e) {
             CutPlanner.getSharedInstance().cancel();
             listeners.clear();
         } catch (ExecutionException e) {
-        } catch (CancellationException e) {
-            CutPlanner.getSharedInstance().cancel();
-            listeners.clear();
+            e.printStackTrace();
         }
     }
 

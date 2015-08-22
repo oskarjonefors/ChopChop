@@ -13,6 +13,7 @@ import java.util.logging.Logger;
  * @author Oskar Jönefors
  */
 
+@SuppressWarnings("ConstantConditions")
 class Solver {
     private static final Logger log = Logger.getLogger(Solver.class.getName());
     private static boolean cancel = false;
@@ -261,7 +262,7 @@ class Solver {
             bestRoot = bestRoot.next;
         }
 
-        return cancel == true ? null : rtn;
+        return cancel ? null : rtn;
     }
 
     static void abort() {

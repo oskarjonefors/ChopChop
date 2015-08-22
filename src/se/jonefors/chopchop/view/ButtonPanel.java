@@ -14,13 +14,12 @@ import java.util.List;
  */
 
 public class ButtonPanel extends JPanel implements SolverListener {
-    private JPanel buttonMode;
-    private JButton calcButton;
-    private JButton printButton;
-    private JButton abortButton;
+    private final JPanel buttonMode;
+    private final JButton calcButton;
+    private final JButton printButton;
+    private final JButton abortButton;
 
-    private JPanel workingMode;
-    private List<ActionListener> listeners;
+    private final JPanel workingMode;
 
     public ButtonPanel() {
 

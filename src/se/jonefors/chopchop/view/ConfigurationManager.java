@@ -33,12 +33,15 @@ public class ConfigurationManager {
 
                 final LengthSpecification newLen = new LengthSpecification(length);
 
-                if (dataLine[1].equals("0")) {
-                    newLen.active = false;
-                } else if (dataLine[1].equals("1")) {
-                    newLen.active = true;
-                } else {
-                    throw new IllegalArgumentException("Malformed configuration file!");
+                switch (dataLine[1]) {
+                    case "0":
+                        newLen.active = false;
+                        break;
+                    case "1":
+                        newLen.active = true;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Malformed configuration file!");
                 }
 
                 lengths.add(newLen);
