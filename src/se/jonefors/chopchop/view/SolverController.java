@@ -37,7 +37,9 @@ public class SolverController implements ListenableSolver, ActionListener {
         int topLength = 0;
 
         for (LengthSpecification len : lengths) {
-            topLength = Math.max(topLength, len.length);
+            if (len.active) {
+                topLength = Math.max(topLength, len.length);
+            }
         }
 
         for (CutSpecification cut : cuts) {

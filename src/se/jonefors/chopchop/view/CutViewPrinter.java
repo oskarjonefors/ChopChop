@@ -15,16 +15,17 @@ public class CutViewPrinter implements Printable {
 
     private final java.util.List<Segment> segments;
     private final String label;
+    private final CutView printCutView;
 
     public CutViewPrinter(java.util.List<Segment> segments, String label) {
         this.segments = segments;
         this.label = label;
+        printCutView = new CutView();
     }
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int i) throws PrinterException {
-        CutView printCutView = new CutView();
-        printCutView.showSegments(segments, label);
+        printCutView.showSegments(segments, label, i);
         printCutView.setSize(new Dimension((int)pageFormat.getImageableWidth(),(int)pageFormat.getImageableHeight()));
             /*
      * User (0,0) is typically outside the imageable area, so we must translate
@@ -37,6 +38,6 @@ public class CutViewPrinter implements Printable {
         printCutView.printAll(graphics);
 
     /* tell the caller that this page is part of the printed document */
-        return i < 1 ? PAGE_EXISTS : NO_SUCH_PAGE;
+        return printCutView.isPageNbrWithinBounds(i) ? PAGE_EXISTS : NO_SUCH_PAGE;
     }
 }
