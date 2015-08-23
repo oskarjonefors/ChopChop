@@ -36,7 +36,6 @@ public class CutView extends JPanel implements SolverListener {
 
     private String name;
     private int totHeight;
-    private int totPadding;
     private int[] pagePaddings;
     private int pageNbr;
 
@@ -45,7 +44,6 @@ public class CutView extends JPanel implements SolverListener {
     public CutView() {
         this.setBackground(Color.WHITE);
         pageNbr = -1;
-        totPadding = 0;
         pagePaddings = new int[MAX_NBR_OF_PAGES];
     }
 
@@ -53,9 +51,6 @@ public class CutView extends JPanel implements SolverListener {
         g.setColor(FONT_COLOR);
         g.setFont(headerFont);
         int currY = g.getFontMetrics().getHeight() + MARGIN;
-        if (pageNbr == 0) {
-            totPadding = 0;
-        }
         if (pageNbr >= 0) {
             int currentPadding = 0;
             for (int i = 0; i < pageNbr; i++) {
@@ -134,7 +129,6 @@ public class CutView extends JPanel implements SolverListener {
             if (pageNbr >= 0 && currY + secHeight + g.getFontMetrics().getHeight() > getHeight()) {
                 pagePaddings[pageNbr] = getHeight() + g.getFontMetrics().getHeight() - currY;
                 currY += pagePaddings[pageNbr];
-                totPadding += pagePaddings[pageNbr];
                 break;
             }
             if (pageNbr < 0 || isWithinPageBounds(currY) && isWithinPageBounds(recStartY)) {
@@ -187,8 +181,13 @@ public class CutView extends JPanel implements SolverListener {
             currY += secHeight + ROW_SPACING;
         }
 
-        totHeight = pageNbr >= 0 ? getHeight() * pageNbr + currY + totPadding : currY;
-        if (pageNbr < 0) {
+        totHeight = currY;
+        if (pageNbr >= 0) {
+            totHeight += getHeight() * pageNbr;
+            for (int p = 0; p <= pageNbr; p++) {
+                totHeight += pagePaddings[p];
+            }
+        } else {
             this.setPreferredSize(new Dimension((int) this.getPreferredSize().getWidth(), totHeight));
             this.revalidate();
         }
