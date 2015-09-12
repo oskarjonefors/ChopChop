@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.view;
+package se.jonefors.chopchop.controller;
 
 import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.ListenableSolver;

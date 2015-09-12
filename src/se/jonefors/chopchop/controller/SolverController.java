@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.view;
+package se.jonefors.chopchop.controller;
 
 import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.ListenableSolver;
@@ -6,6 +6,7 @@ import se.jonefors.chopchop.model.SolverListener;
 import se.jonefors.chopchop.model.representations.Segment;
 import se.jonefors.chopchop.util.CutSpecification;
 import se.jonefors.chopchop.util.LengthSpecification;
+import se.jonefors.chopchop.view.CutView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
