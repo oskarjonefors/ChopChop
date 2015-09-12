@@ -25,8 +25,15 @@ public class CutView extends JPanel implements SolverListener {
 
     private final static int SECTION_HEIGHT = 30;
     private final static int MARGIN = 15;
+    private final static int SUMMARY_HORIZONTAL_SPACE = 10;
     private final static int ROW_SPACING = 20;
     private final static int MAX_NBR_OF_PAGES = 20;
+
+    private final static String CUT_SPECIFICATION = "Kapspecifikation";
+    private final static String USED_LENGTHS = "Materialåtgång";
+    private final static String WASTE = "spill";
+    private final static String FOR_EVERY_LENGTH = "per längd";
+    private final static String IN_TOTAL = "totalt";
 
     private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
     private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);
@@ -51,19 +58,21 @@ public class CutView extends JPanel implements SolverListener {
         g.setColor(FONT_COLOR);
         g.setFont(headerFont);
         int currY = g.getFontMetrics().getHeight() + MARGIN;
+        int pageMargin = MARGIN;
         if (pageNbr >= 0) {
             int currentPadding = 0;
             for (int i = 0; i < pageNbr; i++) {
                 currentPadding += pagePaddings[i];
             }
             currY -= pageNbr * getHeight() - currentPadding;
+            pageMargin = 2 * MARGIN;
         }
 
         if (currY >= 0) {
-            g.drawString("Kapspecifikation: " + label, MARGIN, currY);
+            g.drawString(CUT_SPECIFICATION + ": " + label, pageMargin, currY);
         }
         currY += ROW_SPACING;
-        final double maximumSegmentWidth = this.getWidth() - MARGIN * 4;
+        final double maximumSegmentWidth = this.getWidth() - (pageMargin + MARGIN);
         final double scale = maximumSegmentWidth / segments.get(0).getLength();
 
         /* Header */
@@ -85,9 +94,9 @@ public class CutView extends JPanel implements SolverListener {
         g.setFont(summaryHeaderFont);
 
         if (currY >= 0) {
-            g.drawString("Materialåtgång", MARGIN, currY);
+            g.drawString(USED_LENGTHS, pageMargin, currY);
         }
-        int summaryX = MARGIN + SECTION_HEIGHT + g.getFontMetrics().stringWidth("Materialåtgång");
+        int summaryX = pageMargin + SUMMARY_HORIZONTAL_SPACE + g.getFontMetrics().stringWidth(USED_LENGTHS);
 
         g.setFont(quantityFont);
 
@@ -107,8 +116,8 @@ public class CutView extends JPanel implements SolverListener {
             currY += SECTION_HEIGHT;
 
             int freeSpace = s.getFreeSpace();
-            String fs = freeSpace > 0 ? ", spill " + s.getFreeSpace() + " per längd, " +
-                    (s.getFreeSpace() * s.getQuantity()) + " totalt" : "";
+            String fs = freeSpace > 0 ? ", " + WASTE + " " + s.getFreeSpace() + " " + FOR_EVERY_LENGTH +
+                    ", " + (s.getFreeSpace() * s.getQuantity()) + " " + IN_TOTAL : "";
 
             g.setFont(measurementFont);
             int maxHeight = 0;
@@ -133,12 +142,12 @@ public class CutView extends JPanel implements SolverListener {
             }
             if (pageNbr < 0 || isWithinPageBounds(currY) && isWithinPageBounds(recStartY)) {
                 g.setColor(FONT_COLOR);
-                g.drawString(s.getQuantity() + " x " + s.getLength() + fs + ":", MARGIN, currY);
+                g.drawString(s.getQuantity() + " x " + s.getLength() + fs + ":", pageMargin, currY);
                 g.setColor(BASE_SEGMENT_COLOR);
-                g.fillRect(MARGIN, recStartY, (int)(scale * s.getLength()), secHeight);
+                g.fillRect(pageMargin, recStartY, (int)(scale * s.getLength()), secHeight);
             }
 
-            int currX = MARGIN + 1;
+            int currX = pageMargin + 1;
 
 
             g.setFont(measurementFont);
