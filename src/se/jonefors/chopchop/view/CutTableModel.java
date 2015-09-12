@@ -1,5 +1,7 @@
 package se.jonefors.chopchop.view;
 
+import se.jonefors.chopchop.util.CutSpecification;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,9 +54,9 @@ public class CutTableModel extends AbstractTableModel {
         if (i < data.size()) {
             CutSpecification r = data.get(i);
             if (i1 == QUANTITY_COLUMN) {
-                return r.quantity == 0 ? null : r.quantity;
+                return r.getQuantity() == 0 ? null : r.getQuantity();
             } else if (i1 == LENGTH_COLUMN) {
-                return r.length == 0 ? null : r.length;
+                return r.getLength() == 0 ? null : r.getLength();
             }
         }
         return null;
@@ -71,14 +73,14 @@ public class CutTableModel extends AbstractTableModel {
         }
 
         if (columnIndex == QUANTITY_COLUMN) {
-            editRow.quantity = value;
+            editRow.setQuantity(value);
         } else if (columnIndex == LENGTH_COLUMN) {
-            editRow.length = value;
+            editRow.setLength(value);
         }
         log.log(Level.FINER, "Changed value at row " + rowIndex + " column " + columnIndex +
         " to " + value);
 
-        if (editRow.quantity == 0 && editRow.length == 0 && data.size() > 1) {
+        if (editRow.getQuantity() == 0 && editRow.getLength() == 0 && data.size() > 1) {
             data.remove(editRow);
         } else if (rowIndex == data.size() - 1 && value != 0) {
             data.add(new CutSpecification());

@@ -4,6 +4,8 @@ import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.ListenableSolver;
 import se.jonefors.chopchop.model.SolverListener;
 import se.jonefors.chopchop.model.representations.Segment;
+import se.jonefors.chopchop.util.CutSpecification;
+import se.jonefors.chopchop.util.LengthSpecification;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -37,14 +39,14 @@ public class SolverController implements ListenableSolver, ActionListener {
         int topLength = 0;
 
         for (LengthSpecification len : lengths) {
-            if (len.active) {
-                topLength = Math.max(topLength, len.length);
+            if (len.isActive()) {
+                topLength = Math.max(topLength, len.getLength());
             }
         }
 
         for (CutSpecification cut : cuts) {
-            if (cut.length > topLength) {
-                JOptionPane.showMessageDialog(labelField.getParent(), "Kapet på " + cut.length +
+            if (cut.getLength() > topLength) {
+                JOptionPane.showMessageDialog(labelField.getParent(), "Kapet på " + cut.getLength() +
                         " är längre än den maximalt aktiverade längden " +
                         topLength, "Varning", JOptionPane.ERROR_MESSAGE);
                 return false;

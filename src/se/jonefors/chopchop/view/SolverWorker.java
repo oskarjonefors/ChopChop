@@ -4,6 +4,8 @@ import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.ListenableSolver;
 import se.jonefors.chopchop.model.SolverListener;
 import se.jonefors.chopchop.model.representations.Segment;
+import se.jonefors.chopchop.util.CutSpecification;
+import se.jonefors.chopchop.util.LengthSpecification;
 
 import javax.swing.*;
 import java.util.*;
@@ -63,25 +65,25 @@ class SolverWorker extends SwingWorker<List<Segment>, Double> implements Listena
         int topLength = 0;
 
         for (LengthSpecification len : lengths) {
-            if (len.active && len.length > 0 && !submittedLengths.contains(len.length)) {
-                submittedLengths.add(len.length);
-                planner.addLength(len.length);
+            if (len.isActive() && len.getLength() > 0 && !submittedLengths.contains(len.getLength())) {
+                submittedLengths.add(len.getLength());
+                planner.addLength(len.getLength());
 
-                topLength = Math.max(topLength, len.length);
+                topLength = Math.max(topLength, len.getLength());
             }
         }
 
         Map<Integer, Integer> summarizedCuts = new HashMap<>();
 
         for (CutSpecification cut : cuts) {
-            if (summarizedCuts.containsKey(cut.length)) {
+            if (summarizedCuts.containsKey(cut.getLength())) {
 
-                final int prevQty = summarizedCuts.get(cut.length);
-                summarizedCuts.remove(cut.length);
-                summarizedCuts.put(cut.length, prevQty + cut.quantity);
+                final int prevQty = summarizedCuts.get(cut.getLength());
+                summarizedCuts.remove(cut.getLength());
+                summarizedCuts.put(cut.getLength(), prevQty + cut.getQuantity());
 
-            } else if (cut.length > 0 && cut.quantity > 0) {
-                summarizedCuts.put(cut.length, cut.quantity);
+            } else if (cut.getLength() > 0 && cut.getQuantity() > 0) {
+                summarizedCuts.put(cut.getLength(), cut.getQuantity());
             }
         }
 

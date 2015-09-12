@@ -1,5 +1,7 @@
 package se.jonefors.chopchop.view;
 
+import se.jonefors.chopchop.util.LengthSpecification;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,9 +59,9 @@ public class LengthTableModel extends AbstractTableModel {
         final LengthSpecification s = data.get(i);
 
         if (i1 == ACTIVE_COLUMN) {
-            return s.active;
+            return s.isActive();
         } else if (i1 == LENGTH_COLUMN) {
-            return s.length == 0 ? null : s.length;
+            return s.getLength() == 0 ? null : s.getLength();
         }
         return null;
     }
@@ -79,7 +81,7 @@ public class LengthTableModel extends AbstractTableModel {
 
         if (aValue != null && columnIndex == ACTIVE_COLUMN) {
             final boolean active = (Boolean) aValue;
-            editRow.active = active;
+            editRow.setStatus(active);
             valueSet = true;
             log.log(Level.FINER, "Changed value at row " + rowIndex + " column " + columnIndex +
                     " to " + active);
@@ -94,13 +96,13 @@ public class LengthTableModel extends AbstractTableModel {
             boolean existingLength = false;
 
             for (LengthSpecification len : data) {
-                if (len.length == length) {
+                if (len.getLength() == length) {
                     existingLength = true;
                 }
             }
 
             if (!existingLength) {
-                editRow.length = length;
+                editRow.setLength(length);
                 valueSet = true;
                 log.log(Level.FINER, "Changed value at row " + rowIndex + " column " + columnIndex +
                         " to " + length);

@@ -1,5 +1,7 @@
 package se.jonefors.chopchop.view;
 
+import se.jonefors.chopchop.util.LengthSpecification;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

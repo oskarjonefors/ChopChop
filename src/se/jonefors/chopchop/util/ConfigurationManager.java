@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.view;
+package se.jonefors.chopchop.util;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,10 +35,10 @@ public class ConfigurationManager {
 
                 switch (dataLine[1]) {
                     case "0":
-                        newLen.active = false;
+                        newLen.setStatus(false);
                         break;
                     case "1":
-                        newLen.active = true;
+                        newLen.setStatus(true);
                         break;
                     default:
                         throw new IllegalArgumentException("Malformed configuration file!");
@@ -66,10 +66,10 @@ public class ConfigurationManager {
         StringBuilder sb = new StringBuilder();
 
         for (LengthSpecification len : lengths) {
-            if (len.length > 0) {
-                sb.append(len.length);
+            if (len.getLength() > 0) {
+                sb.append(len.getLength());
                 sb.append(":");
-                sb.append(len.active ? "1" : "0");
+                sb.append(len.isActive() ? "1" : "0");
                 sb.append("\n");
             }
         }
