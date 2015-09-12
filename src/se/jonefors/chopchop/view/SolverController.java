@@ -76,9 +76,10 @@ public class SolverController implements ListenableSolver, ActionListener {
                 CutPlanner planner = CutPlanner.getSharedInstance();
                 List<Segment> sol = planner.getLastSolution();
                 if (sol != null) {
-                    CutViewPrinter printer = new CutViewPrinter(planner.getLastSolution(), labelField.getText());
+                    CutView printCutView = new CutView();
+                    printCutView.showSegments(planner.getLastSolution(), labelField.getText());
                     PrinterJob job = PrinterJob.getPrinterJob();
-                    job.setPrintable(printer);
+                    job.setPrintable(printCutView);
                     boolean ok = job.printDialog();
                     if (ok) {
                         try {

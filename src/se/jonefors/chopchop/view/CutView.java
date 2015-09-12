@@ -7,6 +7,9 @@ import se.jonefors.chopchop.model.representations.SegmentComparator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.util.*;
 import java.util.List;
 
@@ -14,7 +17,7 @@ import java.util.List;
  * @author Oskar Jönefors
  */
 
-public class CutView extends JPanel implements SolverListener {
+public class CutView extends JPanel implements Printable, SolverListener {
 
     private final static Color FONT_COLOR = Color.BLACK;
     private final static Color BASE_SEGMENT_COLOR = Color.BLUE;
@@ -41,12 +44,10 @@ public class CutView extends JPanel implements SolverListener {
     private final Font summaryHeaderFont = new Font("Summary", Font.BOLD, SUMMARY_HEADER_FONT_SIZE);
     private List<Segment> segments;
 
-    private String name;
+    private String label;
     private int totHeight;
     private int[] pagePaddings;
     private int pageNbr;
-
-
 
     public CutView() {
         this.setBackground(Color.WHITE);
@@ -211,7 +212,7 @@ public class CutView extends JPanel implements SolverListener {
         super.paintComponent(graphics);
 
         if (segments != null) {
-            drawSegments(graphics, name);
+            drawSegments(graphics, label);
         }
     }
 
@@ -219,10 +220,10 @@ public class CutView extends JPanel implements SolverListener {
         showSegments(segments, name, -1);
     }
 
-    public void showSegments(List<Segment> segments, String name, int pageNbr) {
+    public void showSegments(List<Segment> segments, String label, int pageNbr) {
         Collections.sort(segments, new SegmentComparator());
         this.segments = segments;
-        this.name = name;
+        this.label = label;
         this.pageNbr = pageNbr;
         if (pageNbr >= pagePaddings.length) {
             pagePaddings = Arrays.copyOf(pagePaddings, pageNbr * 2);
@@ -247,7 +248,17 @@ public class CutView extends JPanel implements SolverListener {
         showSegments(solution, label);
     }
 
-    public boolean isPageNbrWithinBounds(int i) {
-        return i * getHeight() < totHeight;
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int i) throws PrinterException {
+        showSegments(segments, label, i);
+        setSize(new Dimension((int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight()));
+
+        Graphics2D g2d = (Graphics2D) graphics;
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+        printAll(graphics);
+
+    /* tell the caller that this page is part of the printed document */
+        return i * getHeight() < totHeight ? PAGE_EXISTS : NO_SUCH_PAGE;
     }
 }
