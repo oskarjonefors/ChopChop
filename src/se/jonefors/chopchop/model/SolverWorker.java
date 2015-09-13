@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.controller;
+package se.jonefors.chopchop.model;
 
 import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.ListenableSolver;
@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  * @author Oskar Jönefors
  */
 
-class SolverWorker extends SwingWorker<List<Segment>, Double> implements ListenableSolver {
+public class SolverWorker extends SwingWorker<List<Segment>, Double> implements ListenableSolver {
 
     private final List<CutSpecification> cuts;
     private final List<LengthSpecification> lengths;
@@ -24,7 +24,7 @@ class SolverWorker extends SwingWorker<List<Segment>, Double> implements Listena
     private final List<SolverListener> listeners;
     private final String label;
 
-    SolverWorker(List<CutSpecification> cuts, List<LengthSpecification> lengths, String label) {
+    public SolverWorker(List<CutSpecification> cuts, List<LengthSpecification> lengths, String label) {
         this.cuts = cuts;
         this.lengths = lengths;
         this.planner = CutPlanner.getSharedInstance();

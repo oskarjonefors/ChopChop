@@ -3,6 +3,7 @@ package se.jonefors.chopchop.controller;
 import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.ListenableSolver;
 import se.jonefors.chopchop.model.SolverListener;
+import se.jonefors.chopchop.model.SolverWorker;
 import se.jonefors.chopchop.model.representations.Segment;
 import se.jonefors.chopchop.util.CutSpecification;
 import se.jonefors.chopchop.util.LengthSpecification;
@@ -62,7 +63,6 @@ public class SolverController implements ListenableSolver, ActionListener {
         switch (actionEvent.getActionCommand()) {
             case "CALCULATE":
                 if (verifyData()) {
-
                     if (worker != null && !worker.isDone()) {
                         worker.cancel(true);
                     }
