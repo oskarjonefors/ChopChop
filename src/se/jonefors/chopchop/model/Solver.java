@@ -6,8 +6,6 @@ import se.jonefors.chopchop.model.representations.Segment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Oskar Jönefors
@@ -15,7 +13,6 @@ import java.util.logging.Logger;
 
 @SuppressWarnings("ConstantConditions")
 class Solver {
-    private static final Logger log = Logger.getLogger(Solver.class.getName());
     private static boolean cancel = false;
 
     private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
@@ -32,8 +29,6 @@ class Solver {
             final int measurement = cuts[cut];
             final int maxQty = baseLength / measurement;
             maxNbrOfCuts[cut] = maxQty < nbrOfCuts[cut] ? maxQty : nbrOfCuts[cut];
-            log.log(Level.FINER, "Can fit length of " + measurement + " a maximum of " + maxQty +
-                    " times in the base length of " + baseLength);
         }
 
         int[] optimalSolution = new int[maxNbrOfCuts.length];
@@ -61,7 +56,6 @@ class Solver {
             if (currentWaste >= 0 && currentWaste < minimumWaste) {
                 minimumWaste = currentWaste;
                 optimalSolution = Arrays.copyOf(attempt, attempt.length);
-                log.log(Level.FINER, "Found new solution with a waste of " + minimumWaste);
             }
 
         }

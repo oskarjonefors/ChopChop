@@ -4,16 +4,12 @@ import se.jonefors.chopchop.model.representations.Cut;
 import se.jonefors.chopchop.model.representations.Segment;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Oskar Jönefors
  */
 
 public class CutPlanner {
-
-    private static final Logger log = Logger.getLogger(CutPlanner.class.getName());
 
     private final List<Integer> availableLengths;
     private final List<Cut> requestedCuts;
@@ -23,7 +19,6 @@ public class CutPlanner {
     private CutPlanner() {
         availableLengths = new ArrayList<>();
         requestedCuts = new ArrayList<>();
-        log.log(Level.FINE, "Initialized CutPlanner");
     }
 
     public static CutPlanner getSharedInstance() {
@@ -35,7 +30,6 @@ public class CutPlanner {
 
 
     public void addLength(int length) {
-        log.log(Level.FINE, "Added base segment of length " + length);
         if (length <= 0) {
             throw new IllegalArgumentException("addLength: length was " + length +
                     ". May not be 0 or negative!");
@@ -46,12 +40,9 @@ public class CutPlanner {
     public void clear() {
         availableLengths.clear();
         requestedCuts.clear();
-        log.log(Level.FINE, "Cleared CutPlanner");
     }
 
     public void addRequestedCut(int length, int quantity) {
-        log.log(Level.FINE, "Adding requested cut of length " + length +
-                " and quantity " + quantity);
         if (quantity <= 0) {
             throw new IllegalArgumentException("addRequestedCut: quantity was " + quantity +
                     ", cannot be 0 or negative");
