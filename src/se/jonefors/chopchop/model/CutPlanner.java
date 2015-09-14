@@ -107,14 +107,6 @@ public class CutPlanner {
         return !availableLengths.isEmpty() && !requestedCuts.isEmpty();
     }
 
-    /**
-     * Get the last solution calculated, or null if no solution has been calculated yet.
-     * @return A list of Segments, or null.
-     */
-    public List<Segment> getLastSolution() {
-        return lastSolution;
-    }
-
     public void cancel() {
         Solver.abort();
     }
