@@ -1,5 +1,7 @@
 package se.jonefors.chopchop.controller;
 
+import se.jonefors.chopchop.model.Segment;
+import se.jonefors.chopchop.model.SegmentComparator;
 import se.jonefors.chopchop.view.Solution;
 import se.jonefors.chopchop.view.CutSpecification;
 import se.jonefors.chopchop.view.LengthSpecification;
@@ -33,7 +35,9 @@ class SolverWorker extends SwingWorker<Solution, Double> {
         prepareData();
         firePropertyChange("SOLVING_STARTED", null, null);
         if (planner.isReady()) {
-            return new Solution(planner.getOptimalSolution(), label);
+            List<Segment> solutionSegments = planner.getOptimalSolution();
+            Collections.sort(solutionSegments, new SegmentComparator());
+            return new Solution(solutionSegments, label);
         }
         return new Solution(null, null);
     }

@@ -2,7 +2,6 @@ package se.jonefors.chopchop.view;
 
 import se.jonefors.chopchop.model.Cut;
 import se.jonefors.chopchop.model.Segment;
-import se.jonefors.chopchop.model.SegmentComparator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -221,8 +220,6 @@ public class CutView extends JPanel implements Printable, PropertyChangeListener
     }
 
     public void showSegments(Solution solution) {
-        final List<Segment> solutionSegments = solution.getSegments();
-        Collections.sort(solutionSegments, new SegmentComparator());
         this.solution = solution;
         showSegments(-1);
     }
