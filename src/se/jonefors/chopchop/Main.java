@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 class Main {
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     private Main() {
 

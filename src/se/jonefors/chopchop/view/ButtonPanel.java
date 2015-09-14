@@ -20,7 +20,7 @@ public class ButtonPanel extends JPanel implements PropertyChangeListener {
     private final JPanel workingMode;
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     public ButtonPanel() {
 

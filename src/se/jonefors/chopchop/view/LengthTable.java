@@ -20,7 +20,7 @@ class LengthTable extends JPanel {
     private static final int LENGTH_COLUMN_WIDTH = 120;
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     private final List<LengthSpecification> lengths;
     private final JTable table;

@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 public class MainWindow extends JFrame {
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     private final CutTable cutTable;
     private final LengthTable lengthTable;

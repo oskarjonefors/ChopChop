@@ -20,7 +20,7 @@ class CutTable extends JPanel {
     private static final int LENGTH_COLUMN_WIDTH = 100;
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     private final List<CutSpecification> cuts;
     private final JTable table;

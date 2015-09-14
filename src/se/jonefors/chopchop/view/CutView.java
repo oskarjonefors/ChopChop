@@ -33,7 +33,7 @@ public class CutView extends JPanel implements Printable, PropertyChangeListener
     private final static int MAX_NBR_OF_PAGES = 20;
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
     private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);

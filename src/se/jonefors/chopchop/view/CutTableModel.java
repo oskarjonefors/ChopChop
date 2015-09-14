@@ -18,7 +18,7 @@ class CutTableModel extends AbstractTableModel {
     private static final Logger log = Logger.getLogger(CutTableModel.class.getName());
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     public CutTableModel(List<CutSpecification> data) {
 

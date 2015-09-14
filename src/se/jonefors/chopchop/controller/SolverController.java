@@ -26,7 +26,7 @@ public class SolverController implements PropertyChangeHandler, ActionListener {
     private final PropertyChangeSupport propertyChangeSupport;
 
     private static final ResourceBundle messages =
-            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+            ResourceBundle.getBundle("se.jonefors.chopchop.i18n.Messages");
 
     private final MainWindow view;
 
