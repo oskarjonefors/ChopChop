@@ -58,6 +58,7 @@ class CutTable extends JPanel {
                     col = table.convertColumnIndexToModel(col);
                     table.getModel().setValueAt(0, row, col);
                 }
+                table.revalidate();
                 table.repaint();
             }
         });

@@ -52,6 +52,7 @@ class LengthTable extends JPanel {
                     col = table.convertColumnIndexToModel(col);
                     table.getModel().setValueAt(null, row, col);
                 }
+                table.revalidate();
                 table.repaint();
             }
         });
