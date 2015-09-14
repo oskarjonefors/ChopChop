@@ -1,6 +1,6 @@
-package se.jonefors.chopchop.model;
+package se.jonefors.chopchop.controller;
 
-import se.jonefors.chopchop.model.representations.Segment;
+import se.jonefors.chopchop.model.Solution;
 import se.jonefors.chopchop.util.CutSpecification;
 import se.jonefors.chopchop.util.LengthSpecification;
 

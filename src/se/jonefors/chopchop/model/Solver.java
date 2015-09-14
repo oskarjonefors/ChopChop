@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @SuppressWarnings("ConstantConditions")
-class Solver {
+public class Solver {
     private static boolean cancel = false;
 
     private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
@@ -152,7 +152,7 @@ class Solver {
         return remainingSpace;
     }
 
-    static List<Segment> getOptimalSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+    public static List<Segment> getOptimalSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
         cancel = false;
         return compoundSegments(getIterativeSolution(
                 lengths, cutMeasurements, nbrOfCuts), cutMeasurements);
@@ -259,7 +259,7 @@ class Solver {
         return cancel ? null : rtn;
     }
 
-    static void abort() {
+    public static void abort() {
         cancel = true;
     }
 
