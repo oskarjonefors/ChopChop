@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
  * @author Oskar Jönefors
  */
 
-public class SolverWorker extends SwingWorker<Solution, Double> {
+class SolverWorker extends SwingWorker<Solution, Double> {
 
     private final List<CutSpecification> cuts;
     private final List<LengthSpecification> lengths;

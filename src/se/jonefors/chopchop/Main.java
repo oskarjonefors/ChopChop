@@ -2,7 +2,6 @@ package se.jonefors.chopchop;
 
 import se.jonefors.chopchop.controller.SolverController;
 import se.jonefors.chopchop.controller.ConfigurationManager;
-import se.jonefors.chopchop.view.CutSpecification;
 import se.jonefors.chopchop.view.LengthSpecification;
 import se.jonefors.chopchop.view.ButtonPanel;
 import se.jonefors.chopchop.view.CutView;
@@ -11,7 +10,6 @@ import se.jonefors.chopchop.view.MainWindow;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -26,15 +24,13 @@ class Main {
         final CutView cutView = new CutView();
         final JTextField labelField = new JTextField(messages.getString("label"));
 
-        final List<CutSpecification> cutSpecifications = new ArrayList<>();
         final List<LengthSpecification> lengthSpecifications =
                 ConfigurationManager.getSavedLengths();
 
         final MainWindow mainWindow = new MainWindow(buttonPanel, cutView, labelField,
-                cutSpecifications, lengthSpecifications);
+                lengthSpecifications);
 
-        final SolverController controller = new SolverController(cutSpecifications, lengthSpecifications,
-                labelField);
+        final SolverController controller = new SolverController(mainWindow, labelField);
         controller.addPropertyChangeListener(buttonPanel);
         controller.addPropertyChangeListener(cutView);
         buttonPanel.addActionListener(controller);

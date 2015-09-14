@@ -14,14 +14,15 @@ public class MainWindow extends JFrame {
     private static final ResourceBundle messages =
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
+    private final CutTable cutTable;
+    private final LengthTable lengthTable;
+
     public MainWindow(ButtonPanel buttonPanel, CutView cutView,
-                      JTextField labelField,
-                      List<CutSpecification> cutSpecifications,
-                      List<LengthSpecification> lengthSpecifications) {
+                      JTextField labelField, List<LengthSpecification> lengthSpecifications) {
 
-        CutTable cutTable = new CutTable(cutSpecifications, labelField);
+        cutTable = new CutTable(labelField);
 
-        LengthTable lengthTable = new LengthTable(lengthSpecifications);
+        lengthTable = new LengthTable(lengthSpecifications);
 
         JScrollPane cutViewScrollPane = new JScrollPane();
         cutViewScrollPane.setViewportView(cutView);
@@ -41,6 +42,14 @@ public class MainWindow extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+    }
+
+    public List<CutSpecification> getCuts() {
+        return cutTable.getCuts();
+    }
+
+    public List<LengthSpecification> getLengths() {
+        return lengthTable.getLengths();
     }
 
 }

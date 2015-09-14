@@ -22,13 +22,13 @@ class LengthTable extends JPanel {
     private static final ResourceBundle messages =
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
-    private final List<LengthSpecification> availableLengths;
+    private final List<LengthSpecification> lengths;
 
-    public LengthTable(List<LengthSpecification> availableLengths) {
-        this.availableLengths = availableLengths;
+    public LengthTable(List<LengthSpecification> lengths) {
+        this.lengths = lengths;
         loadLengths();
 
-        LengthTableModel model = new LengthTableModel(availableLengths);
+        LengthTableModel model = new LengthTableModel(lengths);
         final JTable table = new JTable(model);
         table.getColumnModel().getColumn(ACTIVE_COLUMN).setMaxWidth(ACTIVE_COLUMN_WIDTH);
         table.getColumnModel().getColumn(LENGTH_COLUMN).setMaxWidth(LENGTH_COLUMN_WIDTH);
@@ -60,8 +60,12 @@ class LengthTable extends JPanel {
     private void loadLengths() {
 
         for (int i = 0; i < DEFAULT_INITIAL_BLANK_ROWS; i++) {
-            availableLengths.add(new LengthSpecification(0));
+            lengths.add(new LengthSpecification(0));
         }
+    }
+
+    List<LengthSpecification> getLengths() {
+        return lengths;
     }
 
 }

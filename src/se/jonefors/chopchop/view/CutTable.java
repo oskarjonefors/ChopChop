@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -22,7 +23,11 @@ class CutTable extends JPanel {
     private static final ResourceBundle messages =
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
-    public CutTable(List<CutSpecification> cuts, JTextField nameField) {
+    private final List<CutSpecification> cuts;
+
+    public CutTable(JTextField nameField) {
+
+        cuts = new ArrayList<>();
 
         for (int i = 0; i < DEFAULT_INITIAL_BLANK_ROWS; i++) {
             cuts.add(new CutSpecification());
@@ -56,5 +61,9 @@ class CutTable extends JPanel {
                 table.repaint();
             }
         });
+    }
+
+    List<CutSpecification> getCuts() {
+        return cuts;
     }
 }

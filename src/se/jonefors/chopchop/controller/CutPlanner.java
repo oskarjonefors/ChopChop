@@ -14,7 +14,6 @@ public class CutPlanner {
 
     private final List<Integer> availableLengths;
     private final List<Cut> requestedCuts;
-    private List<Segment> lastSolution;
     private static CutPlanner instance;
 
     private CutPlanner() {
@@ -95,8 +94,7 @@ public class CutPlanner {
             cutMeasurements[c] = requestedCuts.get(c).getLength();
             nbrOfCuts[c] = requestedCuts.get(c).getQuantity();
         }
-        lastSolution = Solver.getOptimalSolution(lengths, cutMeasurements, nbrOfCuts);
-        return lastSolution;
+        return Solver.getOptimalSolution(lengths, cutMeasurements, nbrOfCuts);
     }
 
     /**

@@ -13,8 +13,6 @@ import java.util.List;
 public class ConfigurationManager {
 
     private static final String CONFIG_PATH_SUFFIX = "/.kapet/lengths.config";
-
-
     private static final int[] DEFAULT_LENGTHS = new int[] {6000, 6100, 10100, 12100};
 
     private static List<LengthSpecification> readFromConfigFile(File file) {
