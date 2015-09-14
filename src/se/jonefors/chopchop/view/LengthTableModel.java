@@ -3,8 +3,6 @@ package se.jonefors.chopchop.view;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Oskar Jönefors
@@ -12,8 +10,6 @@ import java.util.logging.Logger;
 
 class LengthTableModel extends AbstractTableModel {
 
-
-    private static final Logger log = Logger.getLogger(LengthTableModel.class.getName());
     private static final int ACTIVE_COLUMN = 0;
     private static final int LENGTH_COLUMN = 1;
 
@@ -71,6 +67,10 @@ class LengthTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
+        if (rowIndex >= data.size()) {
+            return;
+        }
+
         final LengthSpecification editRow = data.get(rowIndex);
         boolean valueSet = false;
 
@@ -85,8 +85,6 @@ class LengthTableModel extends AbstractTableModel {
             final boolean active = (Boolean) aValue;
             editRow.setStatus(active);
             valueSet = true;
-            log.log(Level.FINER, "Changed value at row " + rowIndex + " column " + columnIndex +
-                    " to " + active);
         } else  if (aValue != null && columnIndex == LENGTH_COLUMN) {
 
             int length = (Integer) aValue;
@@ -106,14 +104,11 @@ class LengthTableModel extends AbstractTableModel {
             if (!existingLength) {
                 editRow.setLength(length);
                 valueSet = true;
-                log.log(Level.FINER, "Changed value at row " + rowIndex + " column " + columnIndex +
-                        " to " + length);
             }
         }
 
         if (valueSet && rowIndex == data.size() - 1) {
             data.add(new LengthSpecification(0));
-            log.log(Level.FINER, "Spawned new row at index " + (rowIndex + 1));
         }
 
     }

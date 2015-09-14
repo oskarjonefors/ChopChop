@@ -67,6 +67,10 @@ class CutTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
+        if (rowIndex >= data.size()) {
+            return;
+        }
+
         final CutSpecification editRow = data.get(rowIndex);
         int value = (Integer) aValue;
 

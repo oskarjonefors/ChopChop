@@ -4,9 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
@@ -24,6 +23,7 @@ class CutTable extends JPanel {
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     private final List<CutSpecification> cuts;
+    private final JTable table;
 
     public CutTable(JTextField nameField) {
 
@@ -34,11 +34,10 @@ class CutTable extends JPanel {
         }
 
         CutTableModel model = new CutTableModel(cuts);
-        final JTable table = new JTable(model);
+        table = new JTable(model);
         table.getColumnModel().getColumn(QUANTITY_COLUMN).setMaxWidth(QUANTITY_COLUMN_WIDTH);
         table.getColumnModel().getColumn(LENGTH_COLUMN).setMaxWidth(LENGTH_COLUMN_WIDTH);
         this.setLayout(new BorderLayout());
-
         final JLabel lengthLabel = new JLabel(messages.getString("requestedLengths"));
         this.add(lengthLabel, BorderLayout.NORTH);
         this.add(new JScrollPane(table), BorderLayout.CENTER);
@@ -65,6 +64,10 @@ class CutTable extends JPanel {
     }
 
     List<CutSpecification> getCuts() {
+        if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
+        }
+
         return cuts;
     }
 }

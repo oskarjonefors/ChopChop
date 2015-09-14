@@ -23,13 +23,14 @@ class LengthTable extends JPanel {
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     private final List<LengthSpecification> lengths;
+    private final JTable table;
 
     public LengthTable(List<LengthSpecification> lengths) {
         this.lengths = lengths;
         loadLengths();
 
         LengthTableModel model = new LengthTableModel(lengths);
-        final JTable table = new JTable(model);
+        table = new JTable(model);
         table.getColumnModel().getColumn(ACTIVE_COLUMN).setMaxWidth(ACTIVE_COLUMN_WIDTH);
         table.getColumnModel().getColumn(LENGTH_COLUMN).setMaxWidth(LENGTH_COLUMN_WIDTH);
         this.setLayout(new BorderLayout());
@@ -66,6 +67,9 @@ class LengthTable extends JPanel {
     }
 
     List<LengthSpecification> getLengths() {
+        if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
+        }
         return lengths;
     }
 
