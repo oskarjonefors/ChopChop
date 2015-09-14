@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.model.representations;
+package se.jonefors.chopchop.model;
 
 import java.util.Comparator;
 

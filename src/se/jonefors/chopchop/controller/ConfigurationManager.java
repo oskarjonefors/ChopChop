@@ -1,4 +1,6 @@
-package se.jonefors.chopchop.util;
+package se.jonefors.chopchop.controller;
+
+import se.jonefors.chopchop.view.LengthSpecification;
 
 import java.io.*;
 import java.util.ArrayList;

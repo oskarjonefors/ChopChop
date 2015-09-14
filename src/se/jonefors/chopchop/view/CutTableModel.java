@@ -1,7 +1,5 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.util.CutSpecification;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.ResourceBundle;

@@ -1,8 +1,8 @@
 package se.jonefors.chopchop.controller;
 
-import se.jonefors.chopchop.model.Solution;
-import se.jonefors.chopchop.util.CutSpecification;
-import se.jonefors.chopchop.util.LengthSpecification;
+import se.jonefors.chopchop.view.Solution;
+import se.jonefors.chopchop.view.CutSpecification;
+import se.jonefors.chopchop.view.LengthSpecification;
 
 import javax.swing.*;
 import java.util.*;

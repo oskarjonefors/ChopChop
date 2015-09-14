@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.model;
+package se.jonefors.chopchop.controller;
 
 import java.beans.PropertyChangeListener;
 

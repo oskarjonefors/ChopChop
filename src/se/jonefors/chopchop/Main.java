@@ -1,9 +1,9 @@
 package se.jonefors.chopchop;
 
 import se.jonefors.chopchop.controller.SolverController;
-import se.jonefors.chopchop.util.ConfigurationManager;
-import se.jonefors.chopchop.util.CutSpecification;
-import se.jonefors.chopchop.util.LengthSpecification;
+import se.jonefors.chopchop.controller.ConfigurationManager;
+import se.jonefors.chopchop.view.CutSpecification;
+import se.jonefors.chopchop.view.LengthSpecification;
 import se.jonefors.chopchop.view.ButtonPanel;
 import se.jonefors.chopchop.view.CutView;
 import se.jonefors.chopchop.view.MainWindow;

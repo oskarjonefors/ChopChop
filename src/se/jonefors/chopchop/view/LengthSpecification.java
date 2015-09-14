@@ -1,4 +1,4 @@
-package se.jonefors.chopchop.util;
+package se.jonefors.chopchop.view;
 
 /**
  * @author Oskar Jönefors

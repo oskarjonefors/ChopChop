@@ -1,6 +1,6 @@
-package se.jonefors.chopchop.model;
+package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.model.representations.Segment;
+import se.jonefors.chopchop.model.Segment;
 
 import java.util.List;
 

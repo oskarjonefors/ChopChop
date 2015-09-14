@@ -1,7 +1,5 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.util.LengthSpecification;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.ResourceBundle;

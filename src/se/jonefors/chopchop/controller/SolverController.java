@@ -1,8 +1,7 @@
 package se.jonefors.chopchop.controller;
 
-import se.jonefors.chopchop.model.PropertyChangeHandler;
-import se.jonefors.chopchop.util.CutSpecification;
-import se.jonefors.chopchop.util.LengthSpecification;
+import se.jonefors.chopchop.view.CutSpecification;
+import se.jonefors.chopchop.view.LengthSpecification;
 import se.jonefors.chopchop.view.CutView;
 
 import javax.swing.*;

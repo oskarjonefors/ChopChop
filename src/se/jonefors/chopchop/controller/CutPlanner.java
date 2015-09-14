@@ -1,8 +1,8 @@
 package se.jonefors.chopchop.controller;
 
 import se.jonefors.chopchop.model.Solver;
-import se.jonefors.chopchop.model.representations.Cut;
-import se.jonefors.chopchop.model.representations.Segment;
+import se.jonefors.chopchop.model.Cut;
+import se.jonefors.chopchop.model.Segment;
 
 import java.util.*;
 

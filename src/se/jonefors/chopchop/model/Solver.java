@@ -1,8 +1,5 @@
 package se.jonefors.chopchop.model;
 
-import se.jonefors.chopchop.model.representations.Cut;
-import se.jonefors.chopchop.model.representations.Segment;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
