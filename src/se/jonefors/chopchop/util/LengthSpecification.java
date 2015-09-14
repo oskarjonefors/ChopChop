@@ -5,8 +5,8 @@ package se.jonefors.chopchop.util;
  */
 
 public class LengthSpecification {
-    boolean active;
-    int length;
+    private boolean active;
+    private int length;
 
     public LengthSpecification(int length) {
         active = true;

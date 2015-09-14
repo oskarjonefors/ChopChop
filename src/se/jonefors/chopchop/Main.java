@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class Main {
+class Main {
 
     private static final ResourceBundle messages =
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
-    public Main() {
+    private Main() {
 
         final ButtonPanel buttonPanel = new ButtonPanel();
         final CutView cutView = new CutView();

@@ -18,7 +18,7 @@ class Solver {
     private static final Logger log = Logger.getLogger(Solver.class.getName());
     private static boolean cancel = false;
 
-    static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
+    private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
 
         int[] maxNbrOfCuts = new int[nbrOfCuts.length];
 
@@ -30,9 +30,9 @@ class Solver {
             }
 
             final int measurement = cuts[cut];
-            final int maxqty = baseLength / measurement;
-            maxNbrOfCuts[cut] = maxqty < nbrOfCuts[cut] ? maxqty : nbrOfCuts[cut];
-            log.log(Level.FINER, "Can fit length of " + measurement + " a maximum of " + maxqty +
+            final int maxQty = baseLength / measurement;
+            maxNbrOfCuts[cut] = maxQty < nbrOfCuts[cut] ? maxQty : nbrOfCuts[cut];
+            log.log(Level.FINER, "Can fit length of " + measurement + " a maximum of " + maxQty +
                     " times in the base length of " + baseLength);
         }
 
@@ -73,7 +73,7 @@ class Solver {
         return optimalSolution;
     }
 
-    static int getTotalLength(int[] measurements, int[] nbrOfCuts) {
+    private static int getTotalLength(int[] measurements, int[] nbrOfCuts) {
         int length = 0;
         for (int cut = 0; cut < nbrOfCuts.length; cut++) {
             length += measurements[cut] * nbrOfCuts[cut];
@@ -81,7 +81,7 @@ class Solver {
         return length;
     }
 
-    static List<Segment> compoundSegments(List<SegDef> segDefList, int[] cutMeasurements) {
+    private static List<Segment> compoundSegments(List<SegDef> segDefList, int[] cutMeasurements) {
         final List<Segment> segList = new ArrayList<>();
 
         for (SegDef def : segDefList) {
@@ -111,7 +111,7 @@ class Solver {
         return compoundedSegList;
     }
 
-    static List<SegDef> getSuitableLengths(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+    private static List<SegDef> getSuitableLengths(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
         List<SegDef> rtn = new ArrayList<>();
 
         int minimumWaste = Integer.MAX_VALUE;
@@ -150,7 +150,7 @@ class Solver {
         return rtn;
     }
 
-    static int getFreeSpace(SegDef def, int[] cutMeasurements) {
+    private static int getFreeSpace(SegDef def, int[] cutMeasurements) {
         int remainingSpace = def.length;
         for (int cut = 0; cut < cutMeasurements.length; cut++) {
             remainingSpace -= def.usage[cut] * cutMeasurements[cut];
@@ -164,7 +164,7 @@ class Solver {
                 lengths, cutMeasurements, nbrOfCuts), cutMeasurements);
     }
 
-    static List<SegDef> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
+    private static List<SegDef> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
 
         List<SegDefLink> segLinks = new ArrayList<>();
 

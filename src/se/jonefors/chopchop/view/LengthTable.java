@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
  * @author Oskar Jönefors
  */
 
-public class LengthTable extends JPanel {
+class LengthTable extends JPanel {
 
     private static final int DEFAULT_INITIAL_BLANK_ROWS = 1;
     private static final int ACTIVE_COLUMN = 0;

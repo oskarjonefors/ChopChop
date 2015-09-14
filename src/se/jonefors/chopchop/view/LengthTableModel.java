@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * @author Oskar Jönefors
  */
 
-public class LengthTableModel extends AbstractTableModel {
+class LengthTableModel extends AbstractTableModel {
 
 
     private static final Logger log = Logger.getLogger(LengthTableModel.class.getName());

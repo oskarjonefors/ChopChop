@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * @author Oskar Jönefors
  */
 
-public class CutTableModel extends AbstractTableModel {
+class CutTableModel extends AbstractTableModel {
 
     private final List<CutSpecification> data;
     private static final int QUANTITY_COLUMN = 0;

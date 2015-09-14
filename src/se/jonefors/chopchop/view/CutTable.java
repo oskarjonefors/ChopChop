@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
  * @author Oskar Jönefors
  */
 
-public class CutTable extends JPanel {
+class CutTable extends JPanel {
 
     private static final int DEFAULT_INITIAL_BLANK_ROWS = 1;
     private static final int QUANTITY_COLUMN = 0;

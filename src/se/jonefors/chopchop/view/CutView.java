@@ -43,13 +43,13 @@ public class CutView extends JPanel implements Printable, SolverListener {
 
     private String label;
     private int totHeight;
-    private int[] pagePaddings;
+    private int[] pagePadding;
     private int pageNbr;
 
     public CutView() {
         this.setBackground(Color.WHITE);
         pageNbr = -1;
-        pagePaddings = new int[MAX_NBR_OF_PAGES];
+        pagePadding = new int[MAX_NBR_OF_PAGES];
     }
 
     private void drawSegments(Graphics g, String label) {
@@ -60,7 +60,7 @@ public class CutView extends JPanel implements Printable, SolverListener {
         if (pageNbr >= 0) {
             int currentPadding = 0;
             for (int i = 0; i < pageNbr; i++) {
-                currentPadding += pagePaddings[i];
+                currentPadding += pagePadding[i];
             }
             currY -= pageNbr * getHeight() - currentPadding;
             pageMargin = 2 * MARGIN;
@@ -136,8 +136,8 @@ public class CutView extends JPanel implements Printable, SolverListener {
             g.setFont(quantityFont);
 
             if (pageNbr >= 0 && currY + secHeight + g.getFontMetrics().getHeight() > getHeight()) {
-                pagePaddings[pageNbr] = getHeight() + g.getFontMetrics().getHeight() - currY;
-                currY += pagePaddings[pageNbr];
+                pagePadding[pageNbr] = getHeight() + g.getFontMetrics().getHeight() - currY;
+                currY += pagePadding[pageNbr];
                 break;
             }
             if (pageNbr < 0 || isWithinPageBounds(currY) && isWithinPageBounds(recStartY)) {
@@ -163,22 +163,22 @@ public class CutView extends JPanel implements Printable, SolverListener {
 
                     final String measurementString = Integer.toString(c.getLength());
                     final int measurementStringWidth = g.getFontMetrics().stringWidth(measurementString);
-                    int centerXpos = currX + (segW / 2);
+                    int centerXPos = currX + (segW / 2);
                     int height = g.getFontMetrics().getHeight() - 2;
                     g.setColor(MEASUREMENT_FONT_COLOR);
                     if (measurementStringWidth + 4 > scale * c.getLength()) {
-                        centerXpos -=  (g.getFontMetrics().stringWidth("0") / 2);
+                        centerXPos -=  (g.getFontMetrics().stringWidth("0") / 2);
                         int verticalY = recStartY + height;
                         for (char ch : measurementString.toCharArray()) {
                             if (pageNbr < 0 || isWithinPageBounds(verticalY)) {
-                                g.drawString(String.valueOf(ch), centerXpos, verticalY);
+                                g.drawString(String.valueOf(ch), centerXPos, verticalY);
                             }
                             verticalY += height;
                         }
                     } else {
-                        centerXpos -=  measurementStringWidth / 2;
+                        centerXPos -=  measurementStringWidth / 2;
                         if (pageNbr < 0 || isWithinPageBounds(recStartY + 2)) {
-                            g.drawString(measurementString, centerXpos, recStartY + (secHeight - 4 + height) / 2);
+                            g.drawString(measurementString, centerXPos, recStartY + (secHeight - 4 + height) / 2);
                         }
                     }
                     currX += segW + 2;
@@ -194,7 +194,7 @@ public class CutView extends JPanel implements Printable, SolverListener {
         if (pageNbr >= 0) {
             totHeight += getHeight() * pageNbr;
             for (int p = 0; p <= pageNbr; p++) {
-                totHeight += pagePaddings[p];
+                totHeight += pagePadding[p];
             }
         } else {
             this.setPreferredSize(new Dimension((int) this.getPreferredSize().getWidth(), totHeight));
@@ -219,13 +219,13 @@ public class CutView extends JPanel implements Printable, SolverListener {
         showSegments(segments, name, -1);
     }
 
-    public void showSegments(List<Segment> segments, String label, int pageNbr) {
+    private void showSegments(List<Segment> segments, String label, int pageNbr) {
         Collections.sort(segments, new SegmentComparator());
         this.segments = segments;
         this.label = label;
         this.pageNbr = pageNbr;
-        if (pageNbr >= pagePaddings.length) {
-            pagePaddings = Arrays.copyOf(pagePaddings, pageNbr * 2);
+        if (pageNbr >= pagePadding.length) {
+            pagePadding = Arrays.copyOf(pagePadding, pageNbr * 2);
         }
         repaint();
     }

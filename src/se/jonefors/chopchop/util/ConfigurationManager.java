@@ -10,10 +10,10 @@ import java.util.List;
 
 public class ConfigurationManager {
 
-    public static final String CONFIG_PATH_SUFFIX = "/.kapet/lengths.config";
+    private static final String CONFIG_PATH_SUFFIX = "/.kapet/lengths.config";
 
 
-    public static final int[] DEFAULT_LENGHTS = new int[] {6000, 6100, 10100, 12100};
+    private static final int[] DEFAULT_LENGTHS = new int[] {6000, 6100, 10100, 12100};
 
     private static List<LengthSpecification> readFromConfigFile(File file) {
 
@@ -56,7 +56,7 @@ public class ConfigurationManager {
 
     private static List<LengthSpecification> loadDefaults() {
         List<LengthSpecification> lengths = new ArrayList<>();
-        for (int i : DEFAULT_LENGHTS) {
+        for (int i : DEFAULT_LENGTHS) {
             lengths.add(new LengthSpecification(i));
         }
         return lengths;
