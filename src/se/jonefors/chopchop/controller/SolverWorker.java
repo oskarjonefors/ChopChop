@@ -1,5 +1,6 @@
 package se.jonefors.chopchop.controller;
 
+import se.jonefors.chopchop.model.CutPlanner;
 import se.jonefors.chopchop.model.Segment;
 import se.jonefors.chopchop.model.SegmentComparator;
 import se.jonefors.chopchop.view.Solution;

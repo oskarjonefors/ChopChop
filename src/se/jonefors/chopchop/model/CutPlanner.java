@@ -1,8 +1,4 @@
-package se.jonefors.chopchop.controller;
-
-import se.jonefors.chopchop.model.Solver;
-import se.jonefors.chopchop.model.Cut;
-import se.jonefors.chopchop.model.Segment;
+package se.jonefors.chopchop.model;
 
 import java.util.*;
 
@@ -28,7 +24,12 @@ public class CutPlanner {
         return instance;
     }
 
-
+    /**
+     * Add a full length to the CutPlanner, to be used as a base onto which the solver can distribute
+     * the requested cuts as efficiently as possible.
+     *
+     * @param length  A positive non-zero number.
+     */
     public void addLength(int length) {
         if (length <= 0) {
             throw new IllegalArgumentException("addLength: length was " + length +
@@ -37,11 +38,22 @@ public class CutPlanner {
         availableLengths.add(length);
     }
 
+    /**
+     * Clear all added lengths and requested cuts from the planner.
+     */
     public void clear() {
         availableLengths.clear();
         requestedCuts.clear();
     }
 
+    /**
+     * Add requested cuts of the given length and quantity. When getOptimalSolution is called,
+     * the solver will distribute the given cuts onto the given length as efficiently as possible
+     * (minimizing the total free space in the solution).
+     *
+     * @param length  A positive non-zero number.
+     * @param quantity  A positive non-zero number.
+     */
     public void addRequestedCut(int length, int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("addRequestedCut: quantity was " + quantity +
@@ -55,7 +67,7 @@ public class CutPlanner {
     }
 
     /**
-     * Get a list of segments with cuts distributed in such a fashion that the free space on all
+     * Get a list of segments with cuts distributed so that the total free space of all
      * segments in the solution is minimized.
      * @return A list of Segments.
      */
@@ -79,22 +91,7 @@ public class CutPlanner {
             }
         }
 
-        Collections.sort(availableLengths);
-        Collections.reverse(availableLengths);
-
-        int[] lengths = new int[availableLengths.size()];
-        for (int i = 0; i < lengths.length; i++) {
-            lengths[i] = availableLengths.get(i);
-        }
-
-        int[] cutMeasurements = new int[requestedCuts.size()];
-        int[] nbrOfCuts = new int [requestedCuts.size()];
-
-        for (int c = 0; c < cutMeasurements.length; c++) {
-            cutMeasurements[c] = requestedCuts.get(c).getLength();
-            nbrOfCuts[c] = requestedCuts.get(c).getQuantity();
-        }
-        return Solver.getOptimalSolution(lengths, cutMeasurements, nbrOfCuts);
+        return Solver.getOptimalSolution(availableLengths, requestedCuts);
     }
 
     /**
@@ -106,8 +103,11 @@ public class CutPlanner {
         return !availableLengths.isEmpty() && !requestedCuts.isEmpty();
     }
 
+    /**
+     * Cancel the solving process.
+     */
     public void cancel() {
-        Solver.abort();
+        Solver.cancel();
     }
 
 }

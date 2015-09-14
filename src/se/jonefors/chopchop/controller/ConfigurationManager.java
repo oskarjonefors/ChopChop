@@ -77,6 +77,10 @@ public class ConfigurationManager {
         return sb.toString();
     }
 
+    /**
+     * Get the LengthSpecifications previously saved to the configuration file,
+     * or the default values if no configuration file has been saved.
+     */
     public static List<LengthSpecification> getSavedLengths() {
         File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
         if (configFile.exists()) {
@@ -86,6 +90,9 @@ public class ConfigurationManager {
         }
     }
 
+    /**
+     * Write the given LengthSpecifications to the configuration file.
+     */
     public static void writeConfig(List<LengthSpecification> lengths) {
         File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
 

@@ -2,6 +2,7 @@ package se.jonefors.chopchop.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -9,8 +10,46 @@ import java.util.List;
  */
 
 @SuppressWarnings("ConstantConditions")
-public class Solver {
+class Solver {
     private static boolean cancel = false;
+
+    /**
+     * Get a list of segments with the requested cuts distributed over the given lengths so that the
+     * total free space of all segments in the solution is minimized.
+     *
+     * @param availableLengths  A list of positive non-zero integers.
+     * @param requestedCuts  A list of requested cuts.
+     * @return  A solution represented by a list of Segments with the requested cuts distributed
+     *          over them.
+     */
+    public static List<Segment> getOptimalSolution(List<Integer> availableLengths, List<Cut> requestedCuts) {
+        Collections.sort(availableLengths);
+        Collections.reverse(availableLengths);
+
+        int[] lengths = new int[availableLengths.size()];
+        for (int i = 0; i < lengths.length; i++) {
+            lengths[i] = availableLengths.get(i);
+        }
+
+        int[] cutMeasurements = new int[requestedCuts.size()];
+        int[] nbrOfCuts = new int [requestedCuts.size()];
+
+        for (int c = 0; c < cutMeasurements.length; c++) {
+            cutMeasurements[c] = requestedCuts.get(c).getLength();
+            nbrOfCuts[c] = requestedCuts.get(c).getQuantity();
+        }
+
+        cancel = false;
+        return compoundSegments(getIterativeSolution(
+                lengths, cutMeasurements, nbrOfCuts), cutMeasurements);
+    }
+
+    /**
+     * Cancel any ongoing solving process.
+     */
+    public static void cancel() {
+        cancel = true;
+    }
 
     private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
 
@@ -149,12 +188,6 @@ public class Solver {
         return remainingSpace;
     }
 
-    public static List<Segment> getOptimalSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
-        cancel = false;
-        return compoundSegments(getIterativeSolution(
-                lengths, cutMeasurements, nbrOfCuts), cutMeasurements);
-    }
-
     private static List<SegDef> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
 
         List<SegDefLink> segLinks = new ArrayList<>();
@@ -256,34 +289,25 @@ public class Solver {
         return cancel ? null : rtn;
     }
 
-    public static void abort() {
-        cancel = true;
-    }
-
-    static class SegDefLink {
-        private final List<SegDefLink> children;
+    private static class SegDefLink {
+        private final List<SegDefLink> children = new ArrayList<>();
         private final SegDefLink parent;
         private SegDefLink next;
         private final SegDef segdef;
-        private boolean searched;
-        private boolean spawnedChildren;
+        private boolean searched = false;
+        private boolean spawnedChildren = false;
         private final int[] remainingCuts;
-        private int waste;
+        private int waste = -1;
         private int nbrOfLengths;
 
         SegDefLink(SegDefLink parent, SegDef segdef, int[] remainingCuts) {
             this.parent = parent;
             this.segdef = segdef;
             this.remainingCuts = remainingCuts;
-            children = new ArrayList<>();
-            searched = false;
-            spawnedChildren = false;
-            waste = -1;
         }
-
     }
 
-    static class SegDef {
+    private static class SegDef {
         private int length;
         private int[] usage;
     }
