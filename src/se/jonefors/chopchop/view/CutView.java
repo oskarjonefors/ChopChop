@@ -1,6 +1,6 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.model.SolverListener;
+import se.jonefors.chopchop.model.Solution;
 import se.jonefors.chopchop.model.representations.Cut;
 import se.jonefors.chopchop.model.representations.Segment;
 import se.jonefors.chopchop.model.representations.SegmentComparator;
@@ -10,6 +10,8 @@ import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * @author Oskar Jönefors
  */
 
-public class CutView extends JPanel implements Printable, SolverListener {
+public class CutView extends JPanel implements Printable, PropertyChangeListener {
 
     private final static Color FONT_COLOR = Color.BLACK;
     private final static Color BASE_SEGMENT_COLOR = Color.BLUE;
@@ -39,9 +41,8 @@ public class CutView extends JPanel implements Printable, SolverListener {
     private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);
     private final Font measurementFont = new Font("Measurement", Font.BOLD, MEASUREMENT_FONT_SIZE);
     private final Font summaryHeaderFont = new Font("Summary", Font.BOLD, SUMMARY_HEADER_FONT_SIZE);
-    private List<Segment> segments;
 
-    private String label;
+    private Solution solution;
     private int totHeight;
     private int[] pagePadding;
     private int pageNbr;
@@ -52,7 +53,11 @@ public class CutView extends JPanel implements Printable, SolverListener {
         pagePadding = new int[MAX_NBR_OF_PAGES];
     }
 
-    private void drawSegments(Graphics g, String label) {
+    private void drawSegments(Graphics g) {
+
+        final List<Segment> segments = solution.getSegments();
+        final String label = solution.getLabel();
+
         g.setColor(FONT_COLOR);
         g.setFont(headerFont);
         int currY = g.getFontMetrics().getHeight() + MARGIN;
@@ -69,6 +74,7 @@ public class CutView extends JPanel implements Printable, SolverListener {
         if (currY >= 0) {
             g.drawString(messages.getString("cutSpecification") + ": " + label, pageMargin, currY);
         }
+
         currY += ROW_SPACING;
         final double maximumSegmentWidth = this.getWidth() - (pageMargin + MARGIN);
         final double scale = maximumSegmentWidth / segments.get(0).getLength();
@@ -210,19 +216,19 @@ public class CutView extends JPanel implements Printable, SolverListener {
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
-        if (segments != null) {
-            drawSegments(graphics, label);
+        if (solution != null) {
+            drawSegments(graphics);
         }
     }
 
-    public void showSegments(List<Segment> segments, String name) {
-        showSegments(segments, name, -1);
+    public void showSegments(Solution solution) {
+        final List<Segment> solutionSegments = solution.getSegments();
+        Collections.sort(solutionSegments, new SegmentComparator());
+        this.solution = solution;
+        showSegments(-1);
     }
 
-    private void showSegments(List<Segment> segments, String label, int pageNbr) {
-        Collections.sort(segments, new SegmentComparator());
-        this.segments = segments;
-        this.label = label;
+    private void showSegments(int pageNbr) {
         this.pageNbr = pageNbr;
         if (pageNbr >= pagePadding.length) {
             pagePadding = Arrays.copyOf(pagePadding, pageNbr * 2);
@@ -231,25 +237,8 @@ public class CutView extends JPanel implements Printable, SolverListener {
     }
 
     @Override
-    public void notifyProcessStarted() {
-        segments = null;
-        repaint();
-    }
-
-    @Override
-    public void notifyProcessAborted() {
-        segments = null;
-        repaint();
-    }
-
-    @Override
-    public void notifySolution(List<Segment> solution, String label) {
-        showSegments(solution, label);
-    }
-
-    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int i) throws PrinterException {
-        showSegments(segments, label, i);
+        showSegments(i);
         setSize(new Dimension((int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight()));
 
         Graphics2D g2d = (Graphics2D) graphics;
@@ -259,5 +248,24 @@ public class CutView extends JPanel implements Printable, SolverListener {
 
     /* tell the caller that this page is part of the printed document */
         return i * getHeight() < totHeight ? PAGE_EXISTS : NO_SUCH_PAGE;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+        final String propertyName = propertyChangeEvent.getPropertyName();
+
+        switch (propertyName) {
+            case "SOLVER_STARTED":
+            case "SOLVER_CANCELLED":
+                repaint();
+                break;
+            case "SOLVER_FINISHED":
+                Object oSolution = propertyChangeEvent.getNewValue();
+                if (oSolution.getClass() == Solution.class) {
+                    showSegments((Solution) oSolution);
+                }
+            default:
+                break;
+        }
     }
 }

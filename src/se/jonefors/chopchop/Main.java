@@ -35,8 +35,8 @@ class Main {
 
         final SolverController controller = new SolverController(cutSpecifications, lengthSpecifications,
                 labelField);
-        controller.addListener(buttonPanel);
-        controller.addListener(cutView);
+        controller.addPropertyChangeListener(buttonPanel);
+        controller.addPropertyChangeListener(cutView);
         buttonPanel.addActionListener(controller);
 
         mainWindow.addWindowListener(new WindowListener() {

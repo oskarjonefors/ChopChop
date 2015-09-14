@@ -1,19 +1,17 @@
 package se.jonefors.chopchop.view;
 
-import se.jonefors.chopchop.model.SolverListener;
-import se.jonefors.chopchop.model.representations.Segment;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
  */
 
-public class ButtonPanel extends JPanel implements SolverListener {
+public class ButtonPanel extends JPanel implements PropertyChangeListener {
     private final JPanel buttonMode;
     private final JButton calcButton;
     private final JButton printButton;
@@ -49,30 +47,6 @@ public class ButtonPanel extends JPanel implements SolverListener {
         progressBar.setSize(this.getSize());
     }
 
-    @Override
-    public void notifyProcessStarted() {
-        remove(buttonMode);
-        add(workingMode);
-        revalidate();
-        repaint();
-    }
-
-    @Override
-    public void notifyProcessAborted() {
-        remove(workingMode);
-        add(buttonMode);
-        revalidate();
-        repaint();
-    }
-
-    @Override
-    public void notifySolution(List<Segment> solution, String label) {
-        remove(workingMode);
-        add(buttonMode);
-        revalidate();
-        repaint();
-    }
-
     public void addActionListener(ActionListener listener) {
         calcButton.addActionListener(listener);
         printButton.addActionListener(listener);
@@ -85,4 +59,26 @@ public class ButtonPanel extends JPanel implements SolverListener {
         abortButton.removeActionListener(listener);
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+        final String propertyName = propertyChangeEvent.getPropertyName();
+
+        switch (propertyName) {
+            case "SOLVER_STARTED":
+                remove(buttonMode);
+                add(workingMode);
+                revalidate();
+                repaint();
+                break;
+            case "SOLVER_FINISHED":
+            case "SOLVER_CANCELLED":
+                remove(workingMode);
+                add(buttonMode);
+                revalidate();
+                repaint();
+                break;
+            default:
+                break;
+        }
+    }
 }

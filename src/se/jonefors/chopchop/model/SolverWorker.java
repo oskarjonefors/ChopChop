@@ -1,8 +1,5 @@
 package se.jonefors.chopchop.model;
 
-import se.jonefors.chopchop.model.CutPlanner;
-import se.jonefors.chopchop.model.ListenableSolver;
-import se.jonefors.chopchop.model.SolverListener;
 import se.jonefors.chopchop.model.representations.Segment;
 import se.jonefors.chopchop.util.CutSpecification;
 import se.jonefors.chopchop.util.LengthSpecification;
@@ -16,44 +13,38 @@ import java.util.concurrent.ExecutionException;
  * @author Oskar Jönefors
  */
 
-public class SolverWorker extends SwingWorker<List<Segment>, Double> implements ListenableSolver {
+public class SolverWorker extends SwingWorker<Solution, Double> {
 
     private final List<CutSpecification> cuts;
     private final List<LengthSpecification> lengths;
     private final CutPlanner planner;
-    private final List<SolverListener> listeners;
     private final String label;
 
     public SolverWorker(List<CutSpecification> cuts, List<LengthSpecification> lengths, String label) {
         this.cuts = cuts;
         this.lengths = lengths;
         this.planner = CutPlanner.getSharedInstance();
-        listeners = new ArrayList<>();
         this.label = label;
     }
 
     @Override
-    protected List<Segment> doInBackground() throws Exception {
+    protected Solution doInBackground() throws Exception {
         planner.clear();
         prepareData();
-        for (SolverListener listener : listeners) {
-            listener.notifyProcessStarted();
-        }
+        firePropertyChange("SOLVING_STARTED", null, null);
         if (planner.isReady()) {
-            return planner.getOptimalSolution();
+            return new Solution(planner.getOptimalSolution(), label);
         }
-        return new ArrayList<>();
+        return new Solution(null, null);
     }
 
     @Override
     protected void done() {
         try {
-            for (SolverListener listener : listeners) {
-                listener.notifySolution(get(), label);
-            }
+            firePropertyChange("SOLVER_FINISHED", null, get());
         } catch (InterruptedException | CancellationException e) {
             CutPlanner.getSharedInstance().cancel();
-            listeners.clear();
+            firePropertyChange("SOLVER_CANCELLED", null, null);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
@@ -91,15 +82,4 @@ public class SolverWorker extends SwingWorker<List<Segment>, Double> implements 
             planner.addRequestedCut(length, summarizedCuts.get(length));
         }
     }
-
-    @Override
-    public void addListener(SolverListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(SolverListener listener) {
-        listeners.remove(listener);
-    }
-
 }

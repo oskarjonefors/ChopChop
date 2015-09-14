@@ -1,10 +1,7 @@
 package se.jonefors.chopchop.controller;
 
-import se.jonefors.chopchop.model.CutPlanner;
-import se.jonefors.chopchop.model.ListenableSolver;
-import se.jonefors.chopchop.model.SolverListener;
+import se.jonefors.chopchop.model.PropertyChangeHandler;
 import se.jonefors.chopchop.model.SolverWorker;
-import se.jonefors.chopchop.model.representations.Segment;
 import se.jonefors.chopchop.util.CutSpecification;
 import se.jonefors.chopchop.util.LengthSpecification;
 import se.jonefors.chopchop.view.CutView;
@@ -14,31 +11,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.util.ArrayList;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Oskar Jönefors
  */
 
-public class SolverController implements ListenableSolver, ActionListener {
+public class SolverController implements PropertyChangeHandler, ActionListener {
 
-    private final List<SolverListener> listeners;
     private final List<CutSpecification> cuts;
     private final List<LengthSpecification> lengths;
     private final JTextField labelField;
     private SolverWorker worker;
+    private PropertyChangeSupport propertyChangeSupport;
 
     private static final ResourceBundle messages =
             ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     public SolverController(List<CutSpecification> cuts, List<LengthSpecification> lengths,
                             JTextField labelField) {
-        listeners = new ArrayList<>();
         this.cuts = cuts;
         this.lengths = lengths;
         this.labelField = labelField;
+        propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
     private boolean verifyData() {
@@ -72,18 +71,22 @@ public class SolverController implements ListenableSolver, ActionListener {
                         worker.cancel(true);
                     }
                     worker = new SolverWorker(cuts, lengths, labelField.getText());
-                    for (SolverListener listener : listeners) {
-                        worker.addListener(listener);
+                    for (PropertyChangeListener listener : propertyChangeSupport.getPropertyChangeListeners()) {
+                        worker.addPropertyChangeListener(listener);
                     }
                     worker.execute();
                 }
                 break;
             case "PRINT":
-                CutPlanner planner = CutPlanner.getSharedInstance();
-                List<Segment> sol = planner.getLastSolution();
-                if (sol != null) {
+                if (worker != null && worker.isDone()) {
                     CutView printCutView = new CutView();
-                    printCutView.showSegments(planner.getLastSolution(), labelField.getText());
+                    try {
+                        printCutView.showSegments(worker.get());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                     PrinterJob job = PrinterJob.getPrinterJob();
                     job.setPrintable(printCutView);
                     boolean ok = job.printDialog();
@@ -97,9 +100,6 @@ public class SolverController implements ListenableSolver, ActionListener {
                 }
                 break;
             case "ABORT":
-                for (SolverListener listener : listeners) {
-                    listener.notifyProcessAborted();
-                }
                 if (worker != null) {
                     worker.cancel(true);
                 }
@@ -110,12 +110,12 @@ public class SolverController implements ListenableSolver, ActionListener {
     }
 
     @Override
-    public void addListener(SolverListener listener) {
-        listeners.add(listener);
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     @Override
-    public void removeListener(SolverListener listener) {
-        listeners.remove(listener);
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 }
