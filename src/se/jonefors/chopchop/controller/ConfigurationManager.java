@@ -90,15 +90,13 @@ public class ConfigurationManager {
         File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
 
         try {
-            configFile.getParentFile().mkdirs();
-            configFile.createNewFile();
-
-            FileWriter fw = new FileWriter(configFile.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(getConfigData(lengths));
-            bw.close();
-
-
+            if (configFile.exists() ||
+                    (configFile.getParentFile().mkdirs() && configFile.createNewFile())) {
+                FileWriter fw = new FileWriter(configFile.getAbsoluteFile());
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(getConfigData(lengths));
+                bw.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
