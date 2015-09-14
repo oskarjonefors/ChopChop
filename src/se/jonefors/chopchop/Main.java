@@ -13,16 +13,18 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class Main {
 
-    private static final String NAME_DEFAULT = "Märke";
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     public Main() {
 
         final ButtonPanel buttonPanel = new ButtonPanel();
         final CutView cutView = new CutView();
-        final JTextField labelField = new JTextField(NAME_DEFAULT);
+        final JTextField labelField = new JTextField(messages.getString("label"));
 
         final List<CutSpecification> cutSpecifications = new ArrayList<>();
         final List<LengthSpecification> lengthSpecifications =

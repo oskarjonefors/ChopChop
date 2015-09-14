@@ -32,11 +32,8 @@ public class CutView extends JPanel implements Printable, SolverListener {
     private final static int ROW_SPACING = 20;
     private final static int MAX_NBR_OF_PAGES = 20;
 
-    private final static String CUT_SPECIFICATION = "Kapspecifikation";
-    private final static String USED_LENGTHS = "Materialåtgång";
-    private final static String WASTE = "spill";
-    private final static String FOR_EVERY_LENGTH = "per längd";
-    private final static String IN_TOTAL = "totalt";
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     private final Font headerFont = new Font("Dialog", Font.BOLD, 20);
     private final Font quantityFont = new Font("Quantity", Font.BOLD, 15);
@@ -70,7 +67,7 @@ public class CutView extends JPanel implements Printable, SolverListener {
         }
 
         if (currY >= 0) {
-            g.drawString(CUT_SPECIFICATION + ": " + label, pageMargin, currY);
+            g.drawString(messages.getString("cutSpecification") + ": " + label, pageMargin, currY);
         }
         currY += ROW_SPACING;
         final double maximumSegmentWidth = this.getWidth() - (pageMargin + MARGIN);
@@ -95,9 +92,10 @@ public class CutView extends JPanel implements Printable, SolverListener {
         g.setFont(summaryHeaderFont);
 
         if (currY >= 0) {
-            g.drawString(USED_LENGTHS, pageMargin, currY);
+            g.drawString(messages.getString("usedFullLengths"), pageMargin, currY);
         }
-        int summaryX = pageMargin + SUMMARY_HORIZONTAL_SPACE + g.getFontMetrics().stringWidth(USED_LENGTHS);
+        int summaryX = pageMargin + SUMMARY_HORIZONTAL_SPACE +
+                g.getFontMetrics().stringWidth(messages.getString("usedFullLengths"));
 
         g.setFont(quantityFont);
 
@@ -117,8 +115,9 @@ public class CutView extends JPanel implements Printable, SolverListener {
             currY += SECTION_HEIGHT;
 
             int freeSpace = s.getFreeSpace();
-            String fs = freeSpace > 0 ? ", " + WASTE + " " + s.getFreeSpace() + " " + FOR_EVERY_LENGTH +
-                    ", " + (s.getFreeSpace() * s.getQuantity()) + " " + IN_TOTAL : "";
+            String fs = freeSpace > 0 ? ", " + messages.getString("waste") + " " +
+                    s.getFreeSpace() + " " + messages.getString("perLength") + ", " +
+                    (s.getFreeSpace() * s.getQuantity()) + " " + messages.getString("inTotal") : "";
 
             g.setFont(measurementFont);
             int maxHeight = 0;

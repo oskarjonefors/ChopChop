@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
@@ -20,12 +21,15 @@ public class ButtonPanel extends JPanel implements SolverListener {
 
     private final JPanel workingMode;
 
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+
     public ButtonPanel() {
 
         buttonMode = new JPanel(new FlowLayout());
 
-        calcButton = new JButton("Beräkna kapschema");
-        printButton = new JButton("Skriv ut");
+        calcButton = new JButton(messages.getString("calcCutSpec"));
+        printButton = new JButton(messages.getString("print"));
 
         calcButton.setActionCommand("CALCULATE");
         printButton.setActionCommand("PRINT");
@@ -37,7 +41,7 @@ public class ButtonPanel extends JPanel implements SolverListener {
 
         workingMode = new JPanel(new FlowLayout());
         final JProgressBar progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
-        abortButton = new JButton("Avbryt");
+        abortButton = new JButton(messages.getString("cancel"));
         abortButton.setActionCommand("ABORT");
         progressBar.setIndeterminate(true);
         workingMode.add(progressBar);

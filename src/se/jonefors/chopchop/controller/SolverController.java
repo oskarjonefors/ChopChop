@@ -16,6 +16,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
@@ -28,6 +29,9 @@ public class SolverController implements ListenableSolver, ActionListener {
     private final List<LengthSpecification> lengths;
     private final JTextField labelField;
     private SolverWorker worker;
+
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     public SolverController(List<CutSpecification> cuts, List<LengthSpecification> lengths,
                             JTextField labelField) {
@@ -48,9 +52,10 @@ public class SolverController implements ListenableSolver, ActionListener {
 
         for (CutSpecification cut : cuts) {
             if (cut.getLength() > topLength) {
-                JOptionPane.showMessageDialog(labelField.getParent(), "Kapet på " + cut.getLength() +
-                        " är längre än den maximalt aktiverade längden " +
-                        topLength, "Varning", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(labelField.getParent(),
+                        messages.getString("requestedCutTooLongErrorPt1") + " " + cut.getLength() +
+                        " " + messages.getString("requestedCutTooLongErrorPt2")+ " " +
+                        topLength, messages.getString("requestedCutTooLongErrorHeader"), JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         }

@@ -6,6 +6,7 @@ import se.jonefors.chopchop.util.LengthSpecification;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
@@ -13,7 +14,8 @@ import java.util.List;
 
 public class MainWindow extends JFrame {
 
-    private static final String APP_NAME = "Kapet";
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
 
     public MainWindow(ButtonPanel buttonPanel, CutView cutView,
                       JTextField labelField,
@@ -38,7 +40,7 @@ public class MainWindow extends JFrame {
         this.getContentPane().getComponent(1).setPreferredSize(new Dimension(500, 400));
         this.getContentPane().getComponent(2).setPreferredSize(new Dimension(150, 400));
 
-        this.setTitle(APP_NAME);
+        this.setTitle(messages.getString("appName"));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);

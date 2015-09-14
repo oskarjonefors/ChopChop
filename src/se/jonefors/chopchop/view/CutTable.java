@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
@@ -20,6 +21,9 @@ public class CutTable extends JPanel {
     private static final int LENGTH_COLUMN = 1;
     private static final int LENGTH_COLUMN_WIDTH = 100;
 
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+
     public CutTable(List<CutSpecification> cuts, JTextField nameField) {
 
         for (int i = 0; i < DEFAULT_INITIAL_BLANK_ROWS; i++) {
@@ -32,7 +36,7 @@ public class CutTable extends JPanel {
         table.getColumnModel().getColumn(LENGTH_COLUMN).setMaxWidth(LENGTH_COLUMN_WIDTH);
         this.setLayout(new BorderLayout());
 
-        final JLabel lengthLabel = new JLabel("Önskade längder");
+        final JLabel lengthLabel = new JLabel(messages.getString("requestedLengths"));
         this.add(lengthLabel, BorderLayout.NORTH);
         this.add(new JScrollPane(table), BorderLayout.CENTER);
         this.add(nameField, BorderLayout.SOUTH);

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Oskar Jönefors
@@ -20,6 +21,9 @@ public class LengthTable extends JPanel {
     private static final int LENGTH_COLUMN = 1;
     private static final int LENGTH_COLUMN_WIDTH = 120;
 
+    private static final ResourceBundle messages =
+            ResourceBundle.getBundle("se.jonefors.chopchop.Messages");
+
     private final List<LengthSpecification> availableLengths;
 
     public LengthTable(List<LengthSpecification> availableLengths) {
@@ -32,7 +36,7 @@ public class LengthTable extends JPanel {
         table.getColumnModel().getColumn(LENGTH_COLUMN).setMaxWidth(LENGTH_COLUMN_WIDTH);
         this.setLayout(new BorderLayout());
 
-        final JLabel lengthLabel = new JLabel("Tillgängliga längder");
+        final JLabel lengthLabel = new JLabel(messages.getString("availableFullLengths"));
         this.add(lengthLabel, BorderLayout.NORTH);
         this.add(new JScrollPane(table), BorderLayout.CENTER);
 
