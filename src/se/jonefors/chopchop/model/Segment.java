@@ -3,6 +3,8 @@ package se.jonefors.chopchop.model;
 import java.util.*;
 
 /**
+ * Class that represents a number of full length segments and any cuts assigned to them.
+ *
  * @author Oskar Jönefors
  */
 public class Segment {
@@ -11,7 +13,14 @@ public class Segment {
     private final Map<Integer,Cut> cuts;
     private int quantity;
 
+    /**
+     * Create a new segment of the given length.
+     * @param length    An int > 0
+     */
     public Segment(int length) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("Segment: length must be > 0, was " + length);
+        }
         this.length = length;
         this.cuts = new HashMap<>();
         this.quantity = 1;
@@ -21,6 +30,12 @@ public class Segment {
         return length;
     }
 
+    /**
+     * Adds the given cut to the segment.
+     *
+     * @param cut  The cut length times its quantity must be less than or equal to the amount of
+     *             free space the Segment has.
+     */
     public void addCut(Cut cut) {
 
         int usedLength = 0;
@@ -65,6 +80,9 @@ public class Segment {
         return quantity;
     }
 
+    /**
+     * @param quantity  An int > 0
+     */
     public void setQuantity(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("setQuantity: quantity was " + quantity +

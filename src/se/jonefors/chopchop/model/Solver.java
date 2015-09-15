@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Class that handles the solving algorithm.
+ * Does not verify any parameters.
+ *
  * @author Oskar Jönefors
  */
 
@@ -56,12 +59,6 @@ class Solver {
         int[] maxNbrOfCuts = new int[nbrOfCuts.length];
 
         for (int cut = 0; cut < nbrOfCuts.length; cut++) {
-
-            if (nbrOfCuts[cut] < 0) {
-                throw new IllegalArgumentException("getMaximumUse: cut quantity at index " + cut +
-                        " was negative!");
-            }
-
             final int measurement = cuts[cut];
             final int maxQty = baseLength / measurement;
             maxNbrOfCuts[cut] = maxQty < nbrOfCuts[cut] ? maxQty : nbrOfCuts[cut];

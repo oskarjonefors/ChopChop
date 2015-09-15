@@ -3,6 +3,8 @@ package se.jonefors.chopchop.model;
 import java.util.Comparator;
 
 /**
+ * Comparator that sorts Cuts by their lengths in descending order.
+ *
  * @author Oskar Jönefors
  */
 

@@ -6,32 +6,47 @@ package se.jonefors.chopchop.model;
 
 public class Cut {
     private final int length;
-    private int qty;
+    private int quantity;
 
-    public Cut(int length, int qty) {
+    /**
+     * @param length    An int > 0.
+     * @param quantity       An int > 0.
+     */
+    public Cut(int length, int quantity) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("Cut: length must be > 0, was " + length);
+        } else if (quantity <= 0) {
+            throw new IllegalArgumentException("Cut: quantity must be > 0, was " + quantity);
+        }
         this.length = length;
-        this.qty = qty;
+        this.quantity = quantity;
     }
 
     public int getLength() {
         return length;
     }
 
+    public void setLength(int length) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("setLength: length must be > 0, was " + length);
+        }
+        this.length = length;
+    }
+
     public int getQuantity() {
-        return qty;
+        return quantity;
     }
 
     public void setQuantity(int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("setQuantity: quantity was " + quantity +
-                    ", may not be 0 or negative!");
+            throw new IllegalArgumentException("setQuantity: quantity must be > 0, was " + quantity);
         }
 
-        qty = quantity;
+        this.quantity = quantity;
     }
 
     @Override
     public String toString() {
-        return "Cut of length " + length + ", repeated " + qty + " times.";
+        return "Cut of length " + length + ", repeated " + quantity + " times.";
     }
 }

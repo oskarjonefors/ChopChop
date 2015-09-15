@@ -8,6 +8,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
 
 /**
+ * Panel containing a button for starting the solving process and a button for printing.
+ * During the solving process, an indeterminate progress bar is shown instead.
+ *
  * @author Oskar Jönefors
  */
 

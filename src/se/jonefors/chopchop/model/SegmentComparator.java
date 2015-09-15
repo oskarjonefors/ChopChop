@@ -3,6 +3,8 @@ package se.jonefors.chopchop.model;
 import java.util.Comparator;
 
 /**
+ * Comparator class that sorts Segments by order of their length in descending order.
+ *
  * @author Oskar Jönefors
  */
 

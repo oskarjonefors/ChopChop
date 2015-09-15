@@ -3,6 +3,9 @@ package se.jonefors.chopchop.model;
 import java.util.*;
 
 /**
+ * Class that saves the problem parameters (cuts and lengths) and verifies them before passing
+ * them on to the Solver.
+ *
  * @author Oskar Jönefors
  */
 
