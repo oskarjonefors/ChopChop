@@ -26,13 +26,6 @@ public class Cut {
         return length;
     }
 
-    public void setLength(int length) {
-        if (length <= 0) {
-            throw new IllegalArgumentException("setLength: length must be > 0, was " + length);
-        }
-        this.length = length;
-    }
-
     public int getQuantity() {
         return quantity;
     }

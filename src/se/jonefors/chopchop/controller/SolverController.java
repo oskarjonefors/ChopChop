@@ -85,7 +85,10 @@ public class SolverController implements ActionListener {
                     if (worker != null && !worker.isDone()) {
                         worker.cancel(true);
                     }
-                    worker = new SolverWorker(view.getCuts(), view.getLengths(), labelField.getText());
+                    /* No need to pass on the placeholder name to the specification */
+                    final String label = labelField.getText().equals(messages.getString("label")) ?
+                            "" : labelField.getText();
+                    worker = new SolverWorker(view.getCuts(), view.getLengths(), label);
                     for (PropertyChangeListener listener : propertyChangeSupport.getPropertyChangeListeners()) {
                         worker.addPropertyChangeListener(listener);
                     }
