@@ -13,6 +13,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 /**
+ * Class that handles the solving process in a separate thread.
+ *
  * @author Oskar Jönefors
  */
 
@@ -23,7 +25,18 @@ class SolverWorker extends SwingWorker<Solution, Double> {
     private final CutPlanner planner;
     private final String label;
 
+    /**
+     * @param cuts      May not be null.
+     * @param lengths   May not be null.
+     * @param label     May be null.
+     */
     public SolverWorker(List<CutSpecification> cuts, List<LengthSpecification> lengths, String label) {
+        if (cuts == null) {
+            throw new NullPointerException("SolverWorker: cuts was null!");
+        } else if (lengths == null) {
+            throw new NullPointerException("SolverWorker: lengths was null!");
+        }
+
         this.cuts = cuts;
         this.lengths = lengths;
         this.planner = CutPlanner.getSharedInstance();
@@ -34,7 +47,7 @@ class SolverWorker extends SwingWorker<Solution, Double> {
     protected Solution doInBackground() throws Exception {
         planner.clear();
         prepareData();
-        firePropertyChange("SOLVING_STARTED", null, null);
+        firePropertyChange("SOLVER_STARTED", null, null);
         if (planner.isReady()) {
             List<Segment> solutionSegments = planner.getOptimalSolution();
             Collections.sort(solutionSegments, new SegmentComparator());

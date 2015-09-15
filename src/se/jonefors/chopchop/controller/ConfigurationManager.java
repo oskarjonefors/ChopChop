@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class that handles the loading and saving of available LengthSpecifications
+ * from and to a configuration file.
+ *
  * @author Oskar Jönefors
  */
 
@@ -15,8 +18,40 @@ public class ConfigurationManager {
     private static final String CONFIG_PATH_SUFFIX = "/.chopchop/lengths.config";
     private static final int[] DEFAULT_LENGTHS = new int[] {6000, 6100, 10100, 12100};
 
-    private static List<LengthSpecification> readFromConfigFile(File file) {
+    /**
+     * Get the LengthSpecifications previously saved to the configuration file,
+     * or the default values if no configuration file has been saved.
+     */
+    public static List<LengthSpecification> getSavedLengths() {
+        File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
+        if (configFile.exists()) {
+            return readFromConfigFile(configFile);
+        } else {
+            return loadDefaults();
+        }
+    }
 
+    /**
+     * Write the given LengthSpecifications to the configuration file.
+     */
+    public static void writeConfig(List<LengthSpecification> lengths) {
+        File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
+
+        try {
+            if (configFile.exists() ||
+                    (configFile.getParentFile().mkdirs() && configFile.createNewFile())) {
+                FileWriter fw = new FileWriter(configFile.getAbsoluteFile());
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(getConfigData(lengths));
+                bw.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static List<LengthSpecification> readFromConfigFile(File file) {
         List<LengthSpecification> lengths = new ArrayList<>();
 
         try {
@@ -75,38 +110,5 @@ public class ConfigurationManager {
         }
 
         return sb.toString();
-    }
-
-    /**
-     * Get the LengthSpecifications previously saved to the configuration file,
-     * or the default values if no configuration file has been saved.
-     */
-    public static List<LengthSpecification> getSavedLengths() {
-        File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
-        if (configFile.exists()) {
-            return readFromConfigFile(configFile);
-        } else {
-            return loadDefaults();
-        }
-    }
-
-    /**
-     * Write the given LengthSpecifications to the configuration file.
-     */
-    public static void writeConfig(List<LengthSpecification> lengths) {
-        File configFile = new File(System.getProperty("user.home") + CONFIG_PATH_SUFFIX);
-
-        try {
-            if (configFile.exists() ||
-                    (configFile.getParentFile().mkdirs() && configFile.createNewFile())) {
-                FileWriter fw = new FileWriter(configFile.getAbsoluteFile());
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(getConfigData(lengths));
-                bw.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

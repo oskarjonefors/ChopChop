@@ -16,10 +16,13 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 
 /**
+ * Class that starts and stops the solving process.
+ * Also starts the printing of cut specifications.
+ *
  * @author Oskar Jönefors
  */
 
-public class SolverController implements PropertyChangeHandler, ActionListener {
+public class SolverController implements ActionListener {
 
     private final JTextField labelField;
     private SolverWorker worker;
@@ -30,9 +33,23 @@ public class SolverController implements PropertyChangeHandler, ActionListener {
 
     private final MainWindow view;
 
+    /**
+     * Create a new SolverController which will fetch the solving parameters from the given
+     * MainWindow, and the label of the problem from the given JTextField.
+     *
+     * @param view          May not be null.
+     * @param labelField    May not be null.
+     */
     public SolverController(MainWindow view,
                             JTextField labelField) {
-
+        if (view == null) {
+            throw new NullPointerException("SolverController(MainWindow, JTextField): " +
+                    "MainWindow was null!");
+        }
+        if (labelField == null) {
+            throw new NullPointerException("SolverController(MainWindow, JTextField): " +
+                    "JTextField was null!");
+        }
         this.view = view;
         this.labelField = labelField;
         propertyChangeSupport = new PropertyChangeSupport(this);
@@ -105,12 +122,10 @@ public class SolverController implements PropertyChangeHandler, ActionListener {
         }
     }
 
-    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
-    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
