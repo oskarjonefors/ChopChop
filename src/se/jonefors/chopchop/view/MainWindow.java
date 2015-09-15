@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
+ * The main window of the application.
+ *
  * @author Oskar Jönefors
  */
 

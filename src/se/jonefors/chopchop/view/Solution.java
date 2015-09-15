@@ -5,6 +5,8 @@ import se.jonefors.chopchop.model.Segment;
 import java.util.List;
 
 /**
+ * A class representing a solution: A list of segments and a label for the problem.
+ *
  * @author Oskar Jönefors
  */
 

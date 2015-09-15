@@ -1,6 +1,10 @@
 package se.jonefors.chopchop.view;
 
 /**
+ * A class representing an available length to be used as a basis for the solving algorithm,
+ * as well as it's status. If inactive, it will not be passed along to the solving algorithm
+ * as a possible candidate in the solution.
+ *
  * @author Oskar Jönefors
  */
 
