@@ -232,7 +232,7 @@ public class CutView extends JPanel implements Printable, PropertyChangeListener
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
-        if (solution != null) {
+        if (solution != null && solution.getSegments() != null) {
             drawSegments(graphics);
         }
     }
