@@ -74,26 +74,27 @@ class Solver {
 
     private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
 
-        int[] maxNbrOfCuts = new int[nbrOfCuts.length];
+        int[] optimalSolution = new int[nbrOfCuts.length];
+        int[] attempt = new int[nbrOfCuts.length];
 
-        for (int cut = 0; cut < nbrOfCuts.length; cut++) {
-            final int measurement = cuts[cut];
-            final int maxQty = baseLength / measurement;
-            maxNbrOfCuts[cut] = maxQty < nbrOfCuts[cut] ? maxQty : nbrOfCuts[cut];
-        }
-
-        int[] optimalSolution = new int[maxNbrOfCuts.length];
-        int[] attempt = new int[maxNbrOfCuts.length];
         int currentIndex = 0;
         int minimumWaste = baseLength;
         boolean triedAllSolutions = false;
 
         while (!triedAllSolutions && !cancel) {
+            int currentWaste = baseLength;
 
-            if (currentIndex < attempt.length && attempt[currentIndex] < maxNbrOfCuts[currentIndex]) {
+            if (currentIndex < attempt.length && attempt[currentIndex] < nbrOfCuts[currentIndex]) {
                     /* Add one more of the current cut if possible */
                 attempt[currentIndex]++;
-                currentIndex = 0;
+                currentWaste = baseLength - getTotalLength(cuts, attempt);
+
+                if (currentWaste < 0) {
+                    attempt[currentIndex] = 0;
+                    currentIndex++;
+                } else {
+                    currentIndex = 0;
+                }
             } else if (currentIndex < attempt.length) {
                 attempt[currentIndex] = 0;
                 currentIndex++;
@@ -101,14 +102,10 @@ class Solver {
                 triedAllSolutions = true;
             }
 
-            int currentWaste = baseLength -
-                    getTotalLength(cuts, attempt);
-
             if (currentWaste >= 0 && currentWaste < minimumWaste) {
                 minimumWaste = currentWaste;
                 optimalSolution = Arrays.copyOf(attempt, attempt.length);
             }
-
         }
 
         if (cancel) {
