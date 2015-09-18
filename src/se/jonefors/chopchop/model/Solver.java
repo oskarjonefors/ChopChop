@@ -112,7 +112,7 @@ class Solver {
             return null;
         }
 
-        return optimalSolution;
+        return optimalSolution == null ? new int[nbrOfCuts.length] : optimalSolution;
     }
 
     private static int getTotalLength(int[] measurements, int[] nbrOfCuts) {
