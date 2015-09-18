@@ -74,7 +74,7 @@ class Solver {
 
     private static int[] getMaximumUse(int[] cuts, int[] nbrOfCuts, int baseLength) {
 
-        int[] optimalSolution = new int[nbrOfCuts.length];
+        int[] optimalSolution = null;
         int[] attempt = new int[nbrOfCuts.length];
 
         int currentIndex = 0;

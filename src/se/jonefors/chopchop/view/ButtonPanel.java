@@ -74,12 +74,6 @@ public class ButtonPanel extends JPanel implements PropertyChangeListener {
         abortButton.addActionListener(listener);
     }
 
-    public void removeActionListener(ActionListener listener) {
-        calcButton.removeActionListener(listener);
-        printButton.removeActionListener(listener);
-        abortButton.removeActionListener(listener);
-    }
-
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         final String propertyName = propertyChangeEvent.getPropertyName();
