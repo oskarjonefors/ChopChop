@@ -202,100 +202,72 @@ class Solver {
 
     private static List<SegDef> getIterativeSolution(int[] lengths, int[] cutMeasurements, int[] nbrOfCuts) {
 
-        List<SegDefLink> segLinks = new ArrayList<>();
+        final SegDef dummy = new SegDef();
+        dummy.usage = new int[nbrOfCuts.length];
+        SegDefLink root = new SegDefLink(null, dummy, Arrays.copyOf(nbrOfCuts, nbrOfCuts.length));
+        SegDefLink currLink = root;
 
-        for (SegDef def : getSuitableLengths(lengths, cutMeasurements, nbrOfCuts)) {
-            if (cancel) {
-                break;
-            }
-                int[] remainingCuts = new int[nbrOfCuts.length];
-                for (int i = 0; i < nbrOfCuts.length; i++) {
-                    remainingCuts[i] = nbrOfCuts[i] - def.usage[i];
+        while (currLink != null && !currLink.searched && !cancel) {
+            if(currLink.spawnedChildren) {
+                boolean allSearched = true;
+                for (SegDefLink next : currLink.children) {
+                    if (!next.searched) {
+                        currLink = next;
+                        allSearched = false;
+                        break;
+                    }
                 }
 
-                segLinks.add(new SegDefLink(null, def, remainingCuts));
-        }
-
-        int bestWaste = Integer.MAX_VALUE;
-        int bestNbrOfLengths = Integer.MAX_VALUE;
-        SegDefLink bestRoot = null;
-
-        for (SegDefLink segLink : segLinks) {
-            if (cancel) {
-                break;
-            }
-
-            SegDefLink currLink = segLink;
-
-            while (currLink != null && !currLink.searched && !cancel) {
-                if(currLink.spawnedChildren) {
-                    boolean allSearched = true;
-                    for (SegDefLink next : currLink.children) {
-                        if (!next.searched) {
-                            currLink = next;
-                            allSearched = false;
-                            break;
+                if (allSearched) {
+                    currLink.waste = getFreeSpace(currLink.segdef, cutMeasurements);
+                    currLink.nbrOfLengths = 1;
+                    if (currLink.children.size() > 0) {
+                        SegDefLink topChild = null;
+                        int minimumWaste = Integer.MAX_VALUE;
+                        int minimumNbrOfLengths = Integer.MAX_VALUE;
+                        for (SegDefLink child : currLink.children) {
+                            if (child.waste < minimumWaste || (child.waste == minimumWaste && child.nbrOfLengths < minimumNbrOfLengths)) {
+                                minimumWaste = child.waste;
+                                minimumNbrOfLengths = child.nbrOfLengths;
+                                topChild = child;
+                            }
                         }
+                        final int topChildWaste = topChild == null ? 0 : topChild.waste;
+                        final int topChildNbrOfLengths = topChild == null ? 0 : topChild.nbrOfLengths;
+
+                        currLink.waste += topChildWaste;
+                        currLink.nbrOfLengths += topChildNbrOfLengths;
+                        currLink.next = topChild;
                     }
 
-                    if (allSearched) {
-
-                        currLink.waste = getFreeSpace(currLink.segdef, cutMeasurements);
-                        currLink.nbrOfLengths = 1;
-                        if (currLink.children.size() > 0) {
-                            SegDefLink topChild = null;
-                            int minimumWaste = Integer.MAX_VALUE;
-                            int minimumNbrOfLengths = Integer.MAX_VALUE;
-                            for (SegDefLink child : currLink.children) {
-                                if (child.waste < minimumWaste || (child.waste == minimumWaste && child.nbrOfLengths < minimumNbrOfLengths)) {
-                                    minimumWaste = child.waste;
-                                    minimumNbrOfLengths = child.nbrOfLengths;
-                                    topChild = child;
-                                }
-                            }
-
-                            final int topChildWaste = topChild == null ? 0 : topChild.waste;
-                            final int topChildNbrOfLengths = topChild == null ? 0 : topChild.nbrOfLengths;
-
-                            currLink.waste += topChildWaste;
-                            currLink.nbrOfLengths += topChildNbrOfLengths;
-                            currLink.next = topChild;
+                    currLink.searched = true;
+                    currLink = currLink.parent;
+                }
+            } else if (!cancel) {
+                currLink.spawnedChildren = true;
+                for (SegDef def : getSuitableLengths(lengths, cutMeasurements, currLink.remainingCuts)) {
+                    if (getTotalLength(cutMeasurements, def.usage) > 0) {
+                        int[] remainingCuts = new int[nbrOfCuts.length];
+                        for (int i = 0; i < nbrOfCuts.length; i++) {
+                            remainingCuts[i] = currLink.remainingCuts[i] - def.usage[i];
                         }
-
-                        currLink.searched = true;
-                        currLink = currLink.parent;
-                    }
-                } else if (!cancel) {
-                    currLink.spawnedChildren = true;
-                    for (SegDef def : getSuitableLengths(lengths, cutMeasurements, currLink.remainingCuts)) {
-                        if (getTotalLength(cutMeasurements, def.usage) > 0) {
-                            int[] remainingCuts = new int[nbrOfCuts.length];
-                            for (int i = 0; i < nbrOfCuts.length; i++) {
-                                remainingCuts[i] = currLink.remainingCuts[i] - def.usage[i];
-                            }
-                            final SegDefLink newLink = new SegDefLink(currLink, def, remainingCuts);
-                            currLink.children.add(newLink);
-                            if (getTotalLength(cutMeasurements, remainingCuts) == 0) {
-                                newLink.waste = getFreeSpace(def, cutMeasurements);
-                                newLink.searched = true;
-                                newLink.nbrOfLengths = 1;
-                            }
+                        final SegDefLink newLink = new SegDefLink(currLink, def, remainingCuts);
+                        currLink.children.add(newLink);
+                        if (getTotalLength(cutMeasurements, remainingCuts) == 0) {
+                            newLink.waste = getFreeSpace(def, cutMeasurements);
+                            newLink.searched = true;
+                            newLink.nbrOfLengths = 1;
                         }
                     }
                 }
-            }
-            if (segLink.waste < bestWaste ||
-                    (segLink.waste == bestWaste && segLink.nbrOfLengths < bestNbrOfLengths)) {
-                bestRoot = segLink;
-                bestWaste = segLink.waste;
-                bestNbrOfLengths = segLink.nbrOfLengths;
             }
         }
 
         List<SegDef> rtn = new ArrayList<>();
-        while (bestRoot != null && !cancel) {
-            rtn.add(bestRoot.segdef);
-            bestRoot = bestRoot.next;
+        currLink = root.next;
+        while (currLink != null && !cancel) {
+            rtn.add(currLink.segdef);
+            currLink = currLink.next;
         }
 
         return cancel ? null : rtn;
